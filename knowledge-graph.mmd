@@ -1,0 +1,87 @@
+flowchart TD
+
+%% ===== Core Proposition =====
+core["2³ − 1 = 7<br/>Dimensional Cognition Formula"]:::core
+
+%% ===== Theoretical Pillars =====
+cube["Cube Geometric Projection<br/>(8 vertices → 7 visible)"]:::pillar
+peirce["Peircean Triadic Semiotics<br/>(Representamen · Object · Interpretant)"]:::pillar
+empson["Empson's Seven Types<br/>of Ambiguity"]:::pillar
+miller["Miller's Magical<br/>Number 7±2"]:::pillar
+camillo["Camillo's<br/>Theatre of Memory"]:::pillar
+proverbs["Proverbs 9:1<br/>Seven Pillars of Wisdom"]:::pillar
+
+%% ===== Key Concepts =====
+spatialization["Spatialization<br/>of Knowledge"]:::concept
+triadic["Triadic<br/>Cognition"]:::concept
+drkg["Dimensionality-Reduced<br/>Knowledge Graphs"]:::concept
+artinstinct["Art Instinct<br/>Learning"]:::concept
+twinbook["Digital<br/>Twinbooks"]:::concept
+
+%% ===== AI & Digital Twin =====
+kdt["Knowledge-based<br/>Digital Twin"]:::tech
+ai_projector["AI as Projection Engine<br/>(High-D → 7D)"]:::tech
+heptabase["Heptabase<br/>(a 7-D knowledge tool)"]:::tech
+
+%% ===== Chapters =====
+ch1["Chapter 1<br/>Introduction"]:::chapter
+ch2["Chapter 2<br/>Literature Review"]:::chapter
+ch3["Chapter 3<br/>Theoretical Model:<br/>Geometric Basis of 2³−1=7"]:::chapter
+ch4["Chapter 4<br/>Constructing DR<br/>Knowledge Graphs"]:::chapter
+ch5["Chapter 5<br/>Digital Twinbook<br/>Design Prototype"]:::chapter
+ch6["Chapter 6<br/>Conclusion and<br/>Future Work"]:::chapter
+
+%% ===== Case Texts =====
+kandinsky["Kandinsky<br/>Point and Line to Plane"]:::text
+klee["Klee<br/>The Thinking Eye"]:::text
+albers["Albers<br/>Interacting with Color"]:::text
+
+%% ===== Core relationships =====
+core -->|"Geometric Proof"| cube
+core -->|"Semiotic Collapse"| peirce
+core -->|"Literary Parallel"| empson
+core -->|"Psychological Confirmation"| miller
+core -->|"Historical Prototype"| camillo
+core -->|"Ancient Metaphor"| proverbs
+peirce -->|"Excludes (1,1,1)"| empson
+camillo -->|"Pillars / Corridors"| proverbs
+camillo -->|"Historical Practice"| spatialization
+triadic -->|"Cognitive Foundation"| core
+triadic --> peirce
+spatialization -->|"Modern Extension"| drkg
+triadic -->|"Cognitive Foundation"| drkg
+core -->|"Design Principle"| drkg
+drkg -->|"Combines with Digital Twin"| kdt
+kdt -->|"AI as Projector"| ai_projector
+ai_projector -->|"Reduction to Intuition"| artinstinct
+artinstinct -->|"Embodied as Prototype"| twinbook
+twinbook --> kandinsky
+twinbook --> klee
+twinbook --> albers
+spatialization -->|"7-D Structure Example"| heptabase
+
+%% ===== Chapter spine (reading order) =====
+ch1 -.-> ch2
+ch2 -.-> ch3
+ch3 -.-> ch4
+ch4 -.-> ch5
+ch5 -.-> ch6
+
+%% ===== Chapter <-> content links =====
+ch1 -->|"Problem Statement"| core
+ch3 -->|"Theoretical Core"| core
+ch2 -->|"Literature Review"| camillo
+ch2 -->|"Literature Review"| miller
+ch4 -->|"Construction Method"| drkg
+ch4 -->|"Construction Method"| kdt
+ch5 -->|"Design Prototype"| twinbook
+ch5 -->|"Design Prototype"| artinstinct
+ch6 -->|"Returns to Core Thesis"| core
+
+%% ===== Styling (matches the web knowledge-graph palette) =====
+classDef core fill:#f0c75e,stroke:#c9a13a,color:#13141d,stroke-width:3px,font-weight:bold;
+classDef pillar fill:#5fd38d,stroke:#3aa968,color:#0d2818;
+classDef concept fill:#b48af0,stroke:#8b5cf0,color:#1f0d33;
+classDef tech fill:#5fe0d3,stroke:#2cb8aa,color:#063a35;
+classDef chapter fill:#6cb2f5,stroke:#3b82f6,color:#0a1f3d;
+classDef text fill:#f5a25f,stroke:#e8773a,color:#3d1f0a;

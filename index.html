@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en" id="html-root">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dimensionality-Reduced Knowledge Graphs | 降維知識圖譜 — Digital Twinbook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700;900&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-1:#0b0d16;
+    --bg-2:#161a2c;
+    --panel:rgba(255,255,255,0.045);
+    --panel-border:rgba(255,255,255,0.10);
+    --text-main:#e8e9f3;
+    --text-sub:#9aa0b8;
+    --gold:#f0c75e;
+    --green:#5fd38d;
+    --purple:#b48af0;
+    --blue:#6cb2f5;
+    --orange:#f5a25f;
+    --teal:#5fe0d3;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;}
+  body{
+    min-height:100vh;
+    font-family:'Noto Sans TC','Segoe UI','Helvetica Neue',Arial,sans-serif;
+    background:radial-gradient(ellipse at 50% -10%, var(--bg-2) 0%, var(--bg-1) 60%);
+    color:var(--text-main);
+  }
+
+  .lang-switch{
+    position:fixed;
+    top:14px;
+    right:18px;
+    display:flex;
+    gap:8px;
+    z-index:10;
+  }
+  .lang-btn{
+    font-family:inherit;
+    font-size:.78rem;
+    color:var(--text-sub);
+    background:transparent;
+    border:1px solid var(--panel-border);
+    padding:5px 14px;
+    border-radius:999px;
+    cursor:pointer;
+    transition:color .15s, border-color .15s, background .15s;
+  }
+  .lang-btn:hover{color:var(--gold);border-color:var(--gold);}
+  .lang-btn.active{color:var(--bg-1);background:var(--gold);border-color:var(--gold);font-weight:700;}
+
+  .lang-block{display:none;}
+  .lang-block.active{display:block;}
+
+  header{
+    text-align:center;
+    padding:52px 16px 22px;
+    border-bottom:1px solid var(--panel-border);
+    background:linear-gradient(180deg, rgba(240,199,94,0.06), transparent);
+  }
+  header h1{
+    font-family:'Noto Serif TC',serif;
+    font-weight:900;
+    font-size:2rem;
+    margin:0 0 6px;
+    background:linear-gradient(135deg,#f0c75e,#f5a25f 60%,#b48af0);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    letter-spacing:.04em;
+  }
+  header .subtitle{
+    font-family:'Noto Serif TC',serif;
+    font-weight:700;
+    font-size:1.15rem;
+    color:var(--text-main);
+    margin:2px 0;
+  }
+  header .tagline{
+    font-size:.85rem;
+    color:var(--text-sub);
+    margin:8px 0 0;
+    letter-spacing:.02em;
+  }
+
+  main{
+    max-width:760px;
+    margin:0 auto;
+    padding:28px 18px 56px;
+  }
+  .card{
+    background:var(--panel);
+    border:1px solid var(--panel-border);
+    border-radius:14px;
+    padding:22px 26px;
+    margin-bottom:20px;
+    backdrop-filter:blur(6px);
+  }
+  .card h2{
+    font-family:'Noto Serif TC',serif;
+    font-size:1.2rem;
+    margin:0 0 12px;
+    color:var(--gold);
+  }
+  .card p{ line-height:1.85; margin:0 0 12px; font-size:.95rem; }
+  .card ul{ margin:0 0 4px; padding-left:1.3em; line-height:1.9; font-size:.95rem; }
+  .card li{ margin-bottom:8px; }
+  .card code{
+    background:rgba(255,255,255,0.08);
+    border-radius:4px;
+    padding:1px 6px;
+    font-size:.85em;
+  }
+  .formula{
+    font-family:'Noto Serif TC',serif;
+    font-weight:900;
+    font-size:1.6rem;
+    text-align:center;
+    background:linear-gradient(135deg,#f0c75e,#b48af0);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    margin:6px 0 16px;
+  }
+
+  .legend-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+    gap:12px;
+  }
+  .legend-grid .item{
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
+    font-size:.85rem;
+    line-height:1.6;
+  }
+  .legend-dot{
+    width:12px;height:12px;border-radius:50%;
+    flex:0 0 12px;margin-top:4px;
+  }
+
+  .cta-wrap{ text-align:center; margin:30px 0 10px; }
+  .cta-button{
+    display:inline-block;
+    font-family:'Noto Serif TC',serif;
+    font-weight:700;
+    font-size:1.05rem;
+    color:var(--bg-1);
+    background:linear-gradient(135deg,#f0c75e,#f5a25f);
+    padding:14px 36px;
+    border-radius:999px;
+    text-decoration:none;
+    transition:transform .15s, box-shadow .15s;
+    box-shadow:0 4px 18px rgba(240,199,94,0.25);
+  }
+  .cta-button:hover{
+    transform:translateY(-2px);
+    box-shadow:0 6px 22px rgba(240,199,94,0.35);
+  }
+
+  footer{
+    text-align:center;
+    font-size:.78rem;
+    color:var(--text-sub);
+    padding:20px 16px 40px;
+    border-top:1px solid var(--panel-border);
+  }
+  footer .src{
+    display:block;
+    margin:8px auto 0;
+    max-width:760px;
+    line-height:1.7;
+  }
+
+  @media (max-width:600px){
+    header{padding:64px 16px 20px;}
+    header h1{font-size:1.5rem;}
+    .lang-switch{position:fixed; top:10px; right:10px;}
+    .card{padding:18px 18px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="lang-switch">
+  <button class="lang-btn" data-lang="en" type="button">EN English</button>
+  <button class="lang-btn" data-lang="zh" type="button">中文 ZH</button>
+</div>
+
+<!-- ===================== ENGLISH ===================== -->
+<div class="lang-block" data-lang="en" id="block-en">
+
+  <header>
+    <h1>Dimensionality-Reduced Knowledge Graphs</h1>
+    <div class="subtitle">A Digital Twinbook Model for Art Instinct Learning</div>
+    <div class="tagline">Interactive Knowledge Graph Visualization of the Thesis &middot; Bilingual Edition</div>
+  </header>
+
+  <main>
+    <section class="card">
+      <h2>About This Page</h2>
+      <p>This page is the bilingual entry point to an interactive <b>knowledge graph visualization</b> built around the thesis <i>Dimensionality-Reduced Knowledge Graphs: A Digital Twinbook Model for Art Instinct Learning</i>.</p>
+      <div class="formula">2³ − 1 = 7</div>
+      <p>The thesis proposes an original geometric-cognitive model: as three-dimensional beings who can only perceive the world through two-dimensional retinal projections, humans can simultaneously grasp at most <b>2³ − 1 = 7</b> of the 8 possible combinations of any &ldquo;ternary structure&rdquo; &mdash; the X, Y, Z axes; Peirce&rsquo;s Representamen&ndash;Object&ndash;Interpretant; or concept&ndash;relation&ndash;context. The 8th combination, <b>(1,1,1)</b> &mdash; absolute certainty &mdash; is the permanently occluded &ldquo;sun&rdquo; of cognition.</p>
+      <p>This formula is cross-checked against six cross-disciplinary lines of evidence and used as a design principle for &ldquo;Dimensionality-Reduced Knowledge Graphs&rdquo;: projecting the vast art-historical knowledge processed by AI into a seven-dimensional structure that human cognition can grasp at a glance &mdash; enabling &ldquo;Art Instinct Learning&rdquo; through a prototype &ldquo;Digital Twinbook.&rdquo;</p>
+    </section>
+
+    <section class="card">
+      <h2>What's in the Knowledge Graph</h2>
+      <p>The interactive graph (<code>index_en.html</code>) contains about 20 nodes, grouped into six color-coded categories:</p>
+      <div class="legend-grid">
+        <div class="item"><span class="legend-dot" style="background:#f0c75e"></span><span><b>Core Proposition</b> &mdash; the 2³−1=7 dimensional-cognition formula at the heart of the thesis</span></div>
+        <div class="item"><span class="legend-dot" style="background:#5fd38d"></span><span><b>Theoretical Pillars</b> &mdash; six cross-disciplinary lines of evidence for &ldquo;seven&rdquo; (cube projection, Peircean semiotics, Empson, Miller, Camillo, Proverbs 9:1)</span></div>
+        <div class="item"><span class="legend-dot" style="background:#b48af0"></span><span><b>Key Concepts</b> &mdash; Spatialization of Knowledge, Triadic Cognition, Dimensionality-Reduced Knowledge Graphs, Art Instinct Learning, Digital Twinbooks</span></div>
+        <div class="item"><span class="legend-dot" style="background:#5fe0d3"></span><span><b>AI &amp; Digital Twin</b> &mdash; Knowledge-based Digital Twin, AI as a Projection Engine, Heptabase</span></div>
+        <div class="item"><span class="legend-dot" style="background:#6cb2f5"></span><span><b>Chapters</b> &mdash; the thesis&rsquo;s six-chapter structure, from Introduction to Conclusion</span></div>
+        <div class="item"><span class="legend-dot" style="background:#f5a25f"></span><span><b>Case Texts</b> &mdash; Kandinsky&rsquo;s <i>Point and Line to Plane</i>, Klee&rsquo;s <i>The Thinking Eye</i>, Albers&rsquo;s <i>Interacting with Color</i></span></div>
+      </div>
+      <p style="margin-top:14px;">Clicking any node opens a detailed explanation and source citation in the sidebar.</p>
+    </section>
+
+    <section class="card">
+      <h2>How to Use</h2>
+      <ul>
+        <li>Drag nodes to rearrange the layout; scroll or pinch to zoom in and out.</li>
+        <li>Click any node to read its detailed description in the left panel &mdash; directly connected nodes are highlighted while unrelated ones fade.</li>
+        <li>Click a legend entry to hide or show an entire category of nodes &mdash; &ldquo;reduce the dimension&rdquo; of the graph to focus on one sub-system at a time.</li>
+        <li>Use the Chapter Flow buttons (Ch.1&ndash;Ch.6) to jump directly to a chapter node.</li>
+        <li>Click &ldquo;Reset View&rdquo; or empty space to return to the full graph and the overview panel.</li>
+      </ul>
+    </section>
+
+    <div class="cta-wrap">
+      <a class="cta-button" href="index_en.html">Open the Knowledge Graph (English) →</a>
+    </div>
+  </main>
+
+  <footer>
+    yonrong.github.io/digital_twinbook
+    <span class="src">Source documents: G000A Thesis Outline &mdash; <i>Dimensionality-Reduced Knowledge Graphs: A Digital Twinbook Model for Art Instinct Learning</i> (draft) / G007 <i>The Seven Pillars: Geometric Proofs of Knowledge Projection and Triadic Cognitive Boundaries in Digital Twin Frameworks</i> (ZH / EN) / <i>2³ − 1 = 7: The Magic Number in Digital Communication Environments</i> (research note).</span>
+  </footer>
+
+</div>
+
+<!-- ===================== 中文 ===================== -->
+<div class="lang-block" data-lang="zh" id="block-zh">
+
+  <header>
+    <h1>降維知識圖譜</h1>
+    <div class="subtitle">數位孿生書的藝術本能學習模型</div>
+    <div class="tagline">論文知識圖譜互動視覺化・雙語版</div>
+  </header>
+
+  <main>
+    <section class="card">
+      <h2>關於本頁</h2>
+      <p>本頁是論文《降維知識圖譜：數位孿生書的藝術本能學習模型》互動式<b>知識圖譜視覺化</b>的雙語入口。</p>
+      <div class="formula">2³ − 1 = 7</div>
+      <p>本論文提出一個原創的幾何認知模型：人類作為三維生物，僅能透過二維視網膜投影理解世界，因此面對任何「三元結構」──如 X、Y、Z 三軸；皮爾斯符號學的再現體・對象・解釋體；或概念・關係・脈絡──時，能同時掌握的維度組合數恆為 <b>2³ − 1 = 7</b>。第 8 種組合「(1,1,1)」──絕對確定的狀態──是永遠被遮蔽、無法直視的認知「太陽」。</p>
+      <p>本論文以六條跨領域理論脈絡印證這個公式，並以此作為「降維知識圖譜」的設計原則：將 AI 處理的龐雜藝術知識，投影為人類可一眼掌握的七維結構，並透過「數位孿生書」原型實現「藝術本能學習」。</p>
+    </section>
+
+    <section class="card">
+      <h2>知識圖譜的內容</h2>
+      <p>互動圖譜（<code>index_ch.html</code>）共約 20 個節點，分為六大色彩分類：</p>
+      <div class="legend-grid">
+        <div class="item"><span class="legend-dot" style="background:#f0c75e"></span><span><b>核心命題</b>──貫穿全文的 2³−1=7 降維認知公式</span></div>
+        <div class="item"><span class="legend-dot" style="background:#5fd38d"></span><span><b>理論支柱</b>──跨領域印證「七」的六條線索（立方體幾何投影、皮爾斯三元符號學、艾普森《七種曖昧》、米勒神奇數字 7±2、卡米羅記憶劇場、箴言 9:1）</span></div>
+        <div class="item"><span class="legend-dot" style="background:#b48af0"></span><span><b>核心概念</b>──知識空間化、三元認知、降維知識圖譜、藝術本能學習、數位孿生書</span></div>
+        <div class="item"><span class="legend-dot" style="background:#5fe0d3"></span><span><b>技術應用</b>──知識型數位孿生、AI 投影引擎、Heptabase</span></div>
+        <div class="item"><span class="legend-dot" style="background:#6cb2f5"></span><span><b>論文章節</b>──論文六章結構，從緒論到結論</span></div>
+        <div class="item"><span class="legend-dot" style="background:#f5a25f"></span><span><b>案例文本</b>──康定斯基《點線面》、保羅・克利《思考之眼》、約瑟夫・阿爾伯斯《色彩互動學》</span></div>
+      </div>
+      <p style="margin-top:14px;">點擊任一節點，側邊欄將顯示該概念的詳細說明與文獻來源。</p>
+    </section>
+
+    <section class="card">
+      <h2>操作說明</h2>
+      <ul>
+        <li>拖曳節點可重新排列版面；滾輪或手勢可放大、縮小畫面。</li>
+        <li>點擊任一節點，左側面板會顯示該概念的詳細說明，並以高亮顯示其直接關聯的節點，其餘節點則淡化。</li>
+        <li>點擊圖例項目可整類顯示／隱藏節點──即「降維」操作，協助聚焦於特定子系統。</li>
+        <li>使用「章節脈絡」按鈕（第 1～6 章）可直接跳至對應章節節點。</li>
+        <li>點擊「重置視圖」或畫面空白處，可回到完整圖譜與總覽面板。</li>
+      </ul>
+    </section>
+
+    <div class="cta-wrap">
+      <a class="cta-button" href="index_ch.html">開啟知識圖譜（中文版）→</a>
+    </div>
+  </main>
+
+  <footer>
+    yonrong.github.io/digital_twinbook
+    <span class="src">來源文件：G000A 論文大綱──《降維知識圖譜：數位孿生書的藝術本能學習模型》（論文大綱初稿）／G007《七支柱：數位孿生框架下知識投影與三元認知邊界的幾何論證》（中／英）／《2³ − 1 = 7：數位溝通環境中的神奇數字》（研究筆記）。</span>
+  </footer>
+
+</div>
+
+<script>
+  function setLang(lang){
+    document.querySelectorAll('.lang-block').forEach(el=>{
+      el.classList.toggle('active', el.dataset.lang === lang);
+    });
+    document.querySelectorAll('.lang-btn').forEach(btn=>{
+      btn.classList.toggle('active', btn.dataset.lang === lang);
+    });
+    document.getElementById('html-root').setAttribute('lang', lang === 'zh' ? 'zh-Hant' : 'en');
+    document.title = lang === 'zh'
+      ? '降維知識圖譜｜數位孿生書的藝術本能學習模型'
+      : 'Dimensionality-Reduced Knowledge Graphs | A Digital Twinbook Model for Art Instinct Learning';
+    try { localStorage.setItem('twinbook-lang', lang); } catch(e){}
+    if (history.replaceState) history.replaceState(null, '', '#' + lang);
+  }
+
+  document.querySelectorAll('.lang-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=> setLang(btn.dataset.lang));
+  });
+
+  let initial = (location.hash || '').replace('#','');
+  if (initial !== 'en' && initial !== 'zh') {
+    try { initial = localStorage.getItem('twinbook-lang'); } catch(e){}
+  }
+  if (initial !== 'en' && initial !== 'zh') {
+    initial = 'en';
+  }
+  setLang(initial);
+</script>
+
+</body>
+</html>
