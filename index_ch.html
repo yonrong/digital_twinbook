@@ -237,11 +237,16 @@
   }
   footer b{color:var(--text-main);}
   @media (max-width:860px){
+    html,body{height:auto;min-height:100%;}
+    body{display:block;}
     .layout{flex-direction:column;}
     .sidebar{
       width:auto;flex:0 0 auto;max-height:42vh;
       border-right:none;border-bottom:1px solid var(--panel-border);
     }
+    main{flex:0 0 auto;}
+    #network{height:60vh;min-height:320px;}
+    .controls{flex:0 0 auto;}
   }
 </style>
 </head>
