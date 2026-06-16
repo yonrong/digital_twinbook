@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en" id="html-root">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Fernando Botero: Philosophy of the Creative Act | 費爾南多·波特羅：創作行為的哲學</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700;900&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-1:#0b0d16;
+    --bg-2:#161a2c;
+    --panel:rgba(255,255,255,0.045);
+    --panel-border:rgba(255,255,255,0.10);
+    --text-main:#e8e9f3;
+    --text-sub:#9aa0b8;
+    --gold:#f0c75e;
+    --green:#5fd38d;
+    --purple:#b48af0;
+    --blue:#6cb2f5;
+    --orange:#f5a25f;
+    --teal:#5fe0d3;
+    --rose:#f5829e;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;}
+  body{
+    min-height:100vh;
+    font-family:'Noto Sans TC','Segoe UI','Helvetica Neue',Arial,sans-serif;
+    background:radial-gradient(ellipse at 50% -10%, var(--bg-2) 0%, var(--bg-1) 60%);
+    color:var(--text-main);
+  }
+
+  .lang-switch{
+    position:fixed;
+    top:14px;
+    right:18px;
+    display:flex;
+    gap:8px;
+    z-index:10;
+  }
+  .lang-btn{
+    font-family:inherit;
+    font-size:.78rem;
+    color:var(--text-sub);
+    background:transparent;
+    border:1px solid var(--panel-border);
+    padding:5px 14px;
+    border-radius:999px;
+    cursor:pointer;
+    transition:color .15s, border-color .15s, background .15s;
+  }
+  .lang-btn:hover{color:var(--gold);border-color:var(--gold);}
+  .lang-btn.active{color:var(--bg-1);background:var(--gold);border-color:var(--gold);font-weight:700;}
+
+  .lang-block{display:none;}
+  .lang-block.active{display:block;}
+
+  header{
+    text-align:center;
+    padding:52px 16px 22px;
+    border-bottom:1px solid var(--panel-border);
+    background:linear-gradient(180deg, rgba(240,199,94,0.06), transparent);
+  }
+  header h1{
+    font-family:'Noto Serif TC',serif;
+    font-weight:900;
+    font-size:2rem;
+    margin:0 0 6px;
+    background:linear-gradient(135deg,#f0c75e,#f5a25f 60%,#b48af0);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    letter-spacing:.04em;
+  }
+  header .subtitle{
+    font-family:'Noto Serif TC',serif;
+    font-weight:700;
+    font-size:1.15rem;
+    color:var(--text-main);
+    margin:2px 0;
+  }
+  header .tagline{
+    font-size:.85rem;
+    color:var(--text-sub);
+    margin:8px 0 0;
+    letter-spacing:.02em;
+  }
+
+  main{
+    max-width:760px;
+    margin:0 auto;
+    padding:28px 18px 56px;
+  }
+  .card{
+    background:var(--panel);
+    border:1px solid var(--panel-border);
+    border-radius:14px;
+    padding:22px 26px;
+    margin-bottom:20px;
+    backdrop-filter:blur(6px);
+  }
+  .card h2{
+    font-family:'Noto Serif TC',serif;
+    font-size:1.2rem;
+    margin:0 0 12px;
+    color:var(--gold);
+  }
+  .card p{ line-height:1.85; margin:0 0 12px; font-size:.95rem; }
+  .card ul{ margin:0 0 4px; padding-left:1.3em; line-height:1.9; font-size:.95rem; }
+  .card li{ margin-bottom:8px; }
+  .card code{
+    background:rgba(255,255,255,0.08);
+    border-radius:4px;
+    padding:1px 6px;
+    font-size:.85em;
+  }
+  .formula{
+    font-family:'Noto Serif TC',serif;
+    font-weight:900;
+    font-size:1.6rem;
+    text-align:center;
+    background:linear-gradient(135deg,#f0c75e,#b48af0);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    margin:6px 0 16px;
+  }
+
+  .legend-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+    gap:12px;
+  }
+  .legend-grid .item{
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
+    font-size:.85rem;
+    line-height:1.6;
+  }
+  .legend-dot{
+    width:12px;height:12px;border-radius:50%;
+    flex:0 0 12px;margin-top:4px;
+  }
+
+  .cta-wrap{ text-align:center; margin:30px 0 10px; }
+  .cta-button{
+    display:inline-block;
+    font-family:'Noto Serif TC',serif;
+    font-weight:700;
+    font-size:1.05rem;
+    color:var(--bg-1);
+    background:linear-gradient(135deg,#f0c75e,#f5a25f);
+    padding:14px 36px;
+    border-radius:999px;
+    text-decoration:none;
+    transition:transform .15s, box-shadow .15s;
+    box-shadow:0 4px 18px rgba(240,199,94,0.25);
+  }
+  .cta-button:hover{
+    transform:translateY(-2px);
+    box-shadow:0 6px 22px rgba(240,199,94,0.35);
+  }
+
+  footer{
+    text-align:center;
+    font-size:.78rem;
+    color:var(--text-sub);
+    padding:20px 16px 40px;
+    border-top:1px solid var(--panel-border);
+  }
+  footer .src{
+    display:block;
+    margin:8px auto 0;
+    max-width:760px;
+    line-height:1.7;
+  }
+
+  @media (max-width:600px){
+    header{padding:64px 16px 20px;}
+    header h1{font-size:1.5rem;}
+    .lang-switch{position:fixed; top:10px; right:10px;}
+    .card{padding:18px 18px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="lang-switch">
+  <button class="lang-btn" data-lang="en" type="button">EN English</button>
+  <button class="lang-btn" data-lang="zh" type="button">中文 ZH</button>
+</div>
+
+<!-- ===================== ENGLISH ===================== -->
+<div class="lang-block" data-lang="en" id="block-en">
+
+  <header>
+    <h1>Fernando Botero</h1>
+    <div class="subtitle">Philosophy of the Creative Act</div>
+    <div class="tagline">Interactive Knowledge Graph Visualization of Marcel Paquet's 1992 Study &middot; Bilingual Edition</div>
+  </header>
+
+  <main>
+    <section class="card">
+      <h2>About This Page</h2>
+      <p>This page is the bilingual entry point to an interactive <b>knowledge graph visualization</b> based on Marcel Paquet's 1992 book <i>Botero: Philosophy of the Creative Act</i>.</p>
+      <div class="formula">"Dansity"</div>
+      <p>The book reads Fernando Botero's monumental, swollen figures not as exaggeration for its own sake, but as a sustained philosophical pursuit of what Paquet calls <b>"dansity"</b> &mdash; the invisible, sentient density that underlies and exceeds everything visible. In this account, painting does not copy the visible world; it gives solidity and presence to what the visible necessarily lacks.</p>
+      <p>This knowledge graph maps that argument across the book's six chapters &mdash; from the founding 1956 epiphany before a sketch of a mandolin to Botero's place in Colombian cultural history &mdash; as a network of theoretical pillars, key concepts, artistic dialogues, key works, and biography.</p>
+    </section>
+
+    <section class="card">
+      <h2>What's in the Knowledge Graph</h2>
+      <p>The interactive graph (<code>index_en.html</code>) contains 26 nodes, grouped into seven color-coded categories:</p>
+      <div class="legend-grid">
+        <div class="item"><span class="legend-dot" style="background:#f0c75e"></span><span><b>Core Proposition</b> &mdash; &ldquo;Dansity,&rdquo; the coined term at the heart of the book</span></div>
+        <div class="item"><span class="legend-dot" style="background:#5fd38d"></span><span><b>Theoretical Pillars</b> &mdash; Solidity, Plasticity, Immanence &amp; Transcendence, Disproportion, Style Without Concept</span></div>
+        <div class="item"><span class="legend-dot" style="background:#b48af0"></span><span><b>Key Concepts</b> &mdash; The Visible &amp; the Sentient, the Reflective Eye, Presentation not Representation</span></div>
+        <div class="item"><span class="legend-dot" style="background:#5fe0d3"></span><span><b>Artistic Dialogues</b> &mdash; Cubism, Mantegna, Magritte, the Quattrocento, Pre-Columbian art</span></div>
+        <div class="item"><span class="legend-dot" style="background:#f5a25f"></span><span><b>Key Works</b> &mdash; <i>Crying Woman</i>, <i>Still Life with Mandolin</i>, <i>Homage to Mantegna</i>, <i>Mona Lisa, Age Twelve</i></span></div>
+        <div class="item"><span class="legend-dot" style="background:#6cb2f5"></span><span><b>Chapters</b> &mdash; the book's six-chapter structure, from &ldquo;The First Steps&rdquo; to &ldquo;Colombia Seen Through Its Own Eyes&rdquo;</span></div>
+        <div class="item"><span class="legend-dot" style="background:#f5829e"></span><span><b>Life &amp; Legacy</b> &mdash; Botero's biography and his place in Colombian cultural history</span></div>
+      </div>
+      <p style="margin-top:14px;">Clicking any node opens a detailed explanation and source citation in the sidebar.</p>
+    </section>
+
+    <section class="card">
+      <h2>How to Use</h2>
+      <ul>
+        <li>Drag nodes to rearrange the layout; scroll or pinch to zoom in and out.</li>
+        <li>Click any node to read its detailed description in the left panel &mdash; directly connected nodes are highlighted while unrelated ones fade.</li>
+        <li>Click a legend entry to hide or show an entire category of nodes &mdash; focus on one sub-system at a time.</li>
+        <li>Use the Chapter Flow buttons (Ch. 1&ndash;6) to jump directly to a chapter node.</li>
+        <li>Click &ldquo;Reset View&rdquo; or empty space to return to the full graph and the overview panel.</li>
+      </ul>
+    </section>
+
+    <div class="cta-wrap">
+      <a class="cta-button" href="index_en.html">Open the Knowledge Graph (English) →</a>
+    </div>
+  </main>
+
+  <footer>
+    Fernando Botero Knowledge Graph
+    <span class="src">Source: Marcel Paquet, <i>Botero: Philosophy of the Creative Act</i>, trans. Susan Resnick (New York: Mallard Press, 1992; French original &copy; 1985 Marcel Paquet). ISBN 0-7924-5823-0.</span>
+  </footer>
+
+</div>
+
+<!-- ===================== 中文 ===================== -->
+<div class="lang-block" data-lang="zh" id="block-zh">
+
+  <header>
+    <h1>費爾南多·波特羅</h1>
+    <div class="subtitle">創作行為的哲學</div>
+    <div class="tagline">馬塞爾·帕凱1992年研究之知識圖譜互動視覺化・雙語版</div>
+  </header>
+
+  <main>
+    <section class="card">
+      <h2>關於本頁</h2>
+      <p>本頁是根據馬塞爾·帕凱（Marcel Paquet）1992年著作《波特羅：創作行為的哲學》（<i>Botero: Philosophy of the Creative Act</i>）所製作之互動式<b>知識圖譜視覺化</b>的雙語入口。</p>
+      <div class="formula">「感識度」Dansity</div>
+      <p>本書將費爾南多·波特羅那些雄偉、膨脹的人物形象，解讀為並非為誇張而誇張的風格手法，而是一場持續的哲學追尋——追尋帕凱所稱的「<b>感識度</b>」（dansity）——那潛藏於、並超越一切可見事物之下的、不可見的感性密度。在這樣的論述中，繪畫並非複製可見的世界，而是賦予可見世界中必然缺席之物以實體與臨在。</p>
+      <p>本知識圖譜將這個論證對應到全書六個章節——從1956年面對曼陀林素描的奠基性靈光一閃，到波特羅在哥倫比亞文化史上的地位——並以理論支柱、關鍵概念、藝術對話、重要作品與生平，交織成一張關係網絡。</p>
+    </section>
+
+    <section class="card">
+      <h2>知識圖譜的內容</h2>
+      <p>互動圖譜（<code>index_ch.html</code>）共26個節點，分為七大色彩分類：</p>
+      <div class="legend-grid">
+        <div class="item"><span class="legend-dot" style="background:#f0c75e"></span><span><b>核心命題</b>——「感識度」(Dansity)，全書核心的自創術語</span></div>
+        <div class="item"><span class="legend-dot" style="background:#5fd38d"></span><span><b>理論支柱</b>——堅實性、可塑性、內在性與超越性、比例失衡、無須概念的風格與溝通</span></div>
+        <div class="item"><span class="legend-dot" style="background:#b48af0"></span><span><b>關鍵概念</b>——可見者與感性者、反思之眼、呈現而非再現</span></div>
+        <div class="item"><span class="legend-dot" style="background:#5fe0d3"></span><span><b>藝術對話</b>——立體主義、曼帖那、馬格利特、文藝復興早期、前哥倫布藝術</span></div>
+        <div class="item"><span class="legend-dot" style="background:#f5a25f"></span><span><b>重要作品</b>——《哭泣的女人》、《有曼陀林的靜物》、《向曼帖那致敬》、《十二歲的蒙娜麗莎》</span></div>
+        <div class="item"><span class="legend-dot" style="background:#6cb2f5"></span><span><b>章節</b>——全書六章結構，從〈最初的步伐〉到〈以自己的眼睛看見的哥倫比亞〉</span></div>
+        <div class="item"><span class="legend-dot" style="background:#f5829e"></span><span><b>生平與遺產</b>——波特羅的生平歷程及其在哥倫比亞文化史上的地位</span></div>
+      </div>
+      <p style="margin-top:14px;">點擊任一節點，側邊欄將顯示該概念的詳細說明與文獻來源。</p>
+    </section>
+
+    <section class="card">
+      <h2>操作說明</h2>
+      <ul>
+        <li>拖曳節點可重新排列版面；滾輪或手勢可放大、縮小畫面。</li>
+        <li>點擊任一節點，左側面板會顯示該概念的詳細說明，並以高亮顯示其直接關聯的節點，其餘節點則淡化。</li>
+        <li>點擊圖例項目可整類顯示／隱藏節點，協助聚焦於特定子系統。</li>
+        <li>使用「章節脈絡」按鈕（第1～6章）可直接跳至對應章節節點。</li>
+        <li>點擊「重置視圖」或畫面空白處，可回到完整圖譜與總覽面板。</li>
+      </ul>
+    </section>
+
+    <div class="cta-wrap">
+      <a class="cta-button" href="index_ch.html">開啟知識圖譜（中文版）→</a>
+    </div>
+  </main>
+
+  <footer>
+    費爾南多·波特羅知識圖譜
+    <span class="src">來源文件：馬塞爾·帕凱（Marcel Paquet），《波特羅：創作行為的哲學》，蘇珊·雷斯尼克（Susan Resnick）英譯（紐約：Mallard Press，1992年；法文原版 &copy; 1985 Marcel Paquet）。ISBN 0-7924-5823-0。</span>
+  </footer>
+
+</div>
+
+<script>
+  function setLang(lang){
+    document.querySelectorAll('.lang-block').forEach(el=>{
+      el.classList.toggle('active', el.dataset.lang === lang);
+    });
+    document.querySelectorAll('.lang-btn').forEach(btn=>{
+      btn.classList.toggle('active', btn.dataset.lang === lang);
+    });
+    document.getElementById('html-root').setAttribute('lang', lang === 'zh' ? 'zh-Hant' : 'en');
+    document.title = lang === 'zh'
+      ? '費爾南多·波特羅：創作行為的哲學｜知識圖譜'
+      : 'Fernando Botero: Philosophy of the Creative Act | Knowledge Graph';
+    try { localStorage.setItem('botero-kg-lang', lang); } catch(e){}
+    if (history.replaceState) history.replaceState(null, '', '#' + lang);
+  }
+
+  document.querySelectorAll('.lang-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=> setLang(btn.dataset.lang));
+  });
+
+  let initial = (location.hash || '').replace('#','');
+  if (initial !== 'en' && initial !== 'zh') {
+    try { initial = localStorage.getItem('botero-kg-lang'); } catch(e){}
+  }
+  if (initial !== 'en' && initial !== 'zh') {
+    initial = 'en';
+  }
+  setLang(initial);
+</script>
+
+</body>
+</html>

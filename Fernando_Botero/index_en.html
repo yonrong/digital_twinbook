@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Fernando Botero: Philosophy of the Creative Act | Knowledge Graph</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700;900&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/vis-network@9.1.9/standalone/umd/vis-network.min.js"></script>
+<style>
+  :root{
+    --bg-1:#0b0d16;
+    --bg-2:#161a2c;
+    --panel:rgba(255,255,255,0.045);
+    --panel-border:rgba(255,255,255,0.10);
+    --text-main:#e8e9f3;
+    --text-sub:#9aa0b8;
+    --gold:#f0c75e;
+    --green:#5fd38d;
+    --purple:#b48af0;
+    --blue:#6cb2f5;
+    --orange:#f5a25f;
+    --teal:#5fe0d3;
+    --rose:#f5829e;
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;margin:0;}
+  body{
+    display:flex;flex-direction:column;
+    font-family:'Noto Sans TC','Segoe UI','Helvetica Neue',Arial,sans-serif;
+    background:radial-gradient(ellipse at 50% -10%, var(--bg-2) 0%, var(--bg-1) 60%);
+    color:var(--text-main);
+  }
+  header{
+    position:relative;
+    flex:0 0 auto;
+    text-align:center;
+    padding:22px 16px 14px;
+    border-bottom:1px solid var(--panel-border);
+    background:linear-gradient(180deg, rgba(240,199,94,0.06), transparent);
+  }
+  header h1{
+    font-family:'Noto Serif TC',serif;
+    font-weight:900;
+    font-size:1.7rem;
+    margin:0 0 4px;
+    background:linear-gradient(135deg,#f0c75e,#f5a25f 60%,#b48af0);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    letter-spacing:.04em;
+  }
+  header .subtitle{
+    font-family:'Noto Serif TC',serif;
+    font-weight:700;
+    font-size:1.05rem;
+    color:var(--text-main);
+    margin:2px 0;
+  }
+  header .en{
+    font-size:.8rem;
+    color:var(--text-sub);
+    margin:4px 0 0;
+    letter-spacing:.02em;
+  }
+  .lang-switch{
+    position:absolute;
+    top:14px;
+    right:18px;
+    font-size:.78rem;
+  }
+  .lang-switch a{
+    color:var(--text-sub);
+    text-decoration:none;
+    border:1px solid var(--panel-border);
+    padding:4px 10px;
+    border-radius:999px;
+    transition:color .15s, border-color .15s;
+  }
+  .lang-switch a:hover{color:var(--gold);border-color:var(--gold);}
+  .layout{
+    flex:1 1 auto;
+    display:flex;
+    min-height:0;
+  }
+  .sidebar{
+    width:380px;
+    flex:0 0 380px;
+    overflow-y:auto;
+    padding:16px;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    border-right:1px solid var(--panel-border);
+  }
+  .panel{
+    background:var(--panel);
+    border:1px solid var(--panel-border);
+    border-radius:12px;
+    padding:14px 16px;
+    backdrop-filter:blur(6px);
+  }
+  .panel h2{
+    font-family:'Noto Serif TC',serif;
+    font-size:1.05rem;
+    margin:0 0 8px;
+    color:var(--gold);
+  }
+  .panel h3{
+    font-size:.8rem;
+    margin:0 0 6px;
+    color:var(--text-sub);
+    font-weight:500;
+    letter-spacing:.05em;
+    text-transform:uppercase;
+  }
+  .panel p{
+    font-size:.86rem;
+    line-height:1.75;
+    margin:0 0 8px;
+    color:var(--text-main);
+  }
+  .panel p:last-child{margin-bottom:0;}
+  .formula{
+    font-family:'Noto Serif TC',serif;
+    font-weight:900;
+    font-size:1.4rem;
+    text-align:center;
+    color:var(--gold);
+    margin:6px 0 10px;
+    letter-spacing:.06em;
+  }
+  .tag{
+    display:inline-block;
+    font-size:.72rem;
+    padding:2px 9px;
+    border-radius:999px;
+    margin:0 6px 8px 0;
+    border:1px solid var(--panel-border);
+    color:var(--text-sub);
+  }
+  .source{
+    font-size:.74rem;
+    color:var(--text-sub);
+    margin-top:8px;
+    padding-top:8px;
+    border-top:1px dashed var(--panel-border);
+  }
+  .back-link{
+    display:none;
+    cursor:pointer;
+    font-size:.78rem;
+    color:var(--blue);
+    margin-bottom:8px;
+    text-decoration:underline;
+  }
+  .legend-list{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+  }
+  .legend-item{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:.82rem;
+    cursor:pointer;
+    padding:5px 8px;
+    border-radius:8px;
+    border:1px solid transparent;
+    transition:background .15s, opacity .15s;
+    user-select:none;
+  }
+  .legend-item:hover{background:rgba(255,255,255,0.05);}
+  .legend-item.off{opacity:.35;}
+  .legend-dot{
+    width:13px;height:13px;border-radius:4px;flex:0 0 13px;
+  }
+  .legend-text small{display:block;color:var(--text-sub);font-size:.7rem;}
+  .chapter-nav{
+    display:flex;flex-wrap:wrap;gap:6px;
+  }
+  .chapter-nav button{
+    font-family:inherit;
+    font-size:.78rem;
+    padding:6px 10px;
+    border-radius:8px;
+    border:1px solid var(--panel-border);
+    background:rgba(108,178,245,0.08);
+    color:var(--text-main);
+    cursor:pointer;
+    transition:background .15s, transform .1s;
+  }
+  .chapter-nav button:hover{background:rgba(108,178,245,0.22);transform:translateY(-1px);}
+  main{
+    flex:1 1 auto;
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    min-width:0;
+  }
+  #network{
+    flex:1 1 auto;
+    min-height:400px;
+  }
+  .controls{
+    flex:0 0 auto;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    padding:8px 14px;
+    border-top:1px solid var(--panel-border);
+    background:rgba(0,0,0,0.18);
+    font-size:.78rem;
+    color:var(--text-sub);
+    flex-wrap:wrap;
+  }
+  .controls button{
+    font-family:inherit;
+    font-size:.78rem;
+    padding:6px 14px;
+    border-radius:8px;
+    border:1px solid var(--panel-border);
+    background:rgba(240,199,94,0.10);
+    color:var(--gold);
+    cursor:pointer;
+  }
+  .controls button:hover{background:rgba(240,199,94,0.22);}
+  footer{
+    flex:0 0 auto;
+    border-top:1px solid var(--panel-border);
+    padding:10px 16px;
+    font-size:.72rem;
+    color:var(--text-sub);
+    line-height:1.8;
+    background:rgba(0,0,0,0.15);
+  }
+  footer b{color:var(--text-main);}
+  @media (max-width:860px){
+    html,body{height:auto;min-height:100%;}
+    body{display:block;}
+    .layout{flex-direction:column;}
+    .sidebar{
+      width:auto;flex:0 0 auto;max-height:42vh;
+      border-right:none;border-bottom:1px solid var(--panel-border);
+    }
+    main{flex:0 0 auto;}
+    #network{height:60vh;min-height:320px;}
+    .controls{flex:0 0 auto;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="lang-switch"><a href="index_ch.html">中文 ZH</a> &nbsp;|&nbsp; <a href="index.html">&#8962; Home</a></div>
+  <h1>Fernando Botero</h1>
+  <div class="subtitle">Philosophy of the Creative Act</div>
+  <div class="en">An Interactive Knowledge Graph of Marcel Paquet's 1992 Study &mdash; Solidity &middot; Plasticity &middot; Dansity</div>
+</header>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="panel" id="info-panel">
+      <div class="back-link" id="back-link">&larr; Back to Overview</div>
+      <div id="info-content"></div>
+    </div>
+
+    <div class="panel">
+      <h3>Legend &mdash; click to show / hide a category</h3>
+      <div class="legend-list" id="legend-list"></div>
+    </div>
+
+    <div class="panel">
+      <h3>Chapter Flow</h3>
+      <div class="chapter-nav" id="chapter-nav"></div>
+    </div>
+
+    <div class="panel">
+      <h3>How to Use</h3>
+      <p>
+        &bull; Drag nodes to rearrange the layout; scroll or pinch to zoom.<br>
+        &bull; Click any node to see its detailed description on the right, with directly connected nodes highlighted.<br>
+        &bull; Click a legend item to hide or show an entire category of nodes and focus on a sub-system.<br>
+        &bull; Click "Reset View" to restore the full graph.
+      </p>
+    </div>
+  </aside>
+
+  <main>
+    <div id="network"></div>
+    <div class="controls">
+      <span>Tip: click a node for details; click empty space or "Reset View" to return to the overview.</span>
+      <button id="reset-btn">Reset View</button>
+    </div>
+  </main>
+</div>
+
+<footer>
+  <b>Source:</b>
+  Marcel Paquet, <i>Botero: Philosophy of the Creative Act</i>, trans. Susan Resnick (New York: Mallard Press, 1992; French original &copy; 1985 Marcel Paquet). ISBN 0-7924-5823-0.
+  &nbsp;Page numbers in node details refer to this English edition.
+</footer>
+
+<script>
+const GROUPS = {
+  core:      { color:'#f0c75e', label:'Core Proposition',   desc:'"Dansity" — the coined term at the heart of the book' },
+  pillar:    { color:'#5fd38d', label:'Theoretical Pillars', desc:"The book's major themes, chapter by chapter" },
+  concept:   { color:'#b48af0', label:'Key Concepts',        desc:"Core terms Paquet uses to read Botero's painting" },
+  influence: { color:'#5fe0d3', label:'Artistic Dialogues',  desc:'Painters and traditions Botero is read against' },
+  work:      { color:'#f5a25f', label:'Key Works',           desc:"Paintings that anchor the book's argument" },
+  chapter:   { color:'#6cb2f5', label:'Chapters',            desc:'The six-chapter structure of the book' },
+  life:      { color:'#f5829e', label:'Life & Legacy',       desc:'Biography and Colombian cultural legacy' }
+};
+
+function hexToRgba(hex, a){
+  const r=parseInt(hex.slice(1,3),16), g=parseInt(hex.slice(3,5),16), b=parseInt(hex.slice(5,7),16);
+  return `rgba(${r},${g},${b},${a})`;
+}
+
+const nodes = [
+  { id:'dansity', group:'core',
+    label:'"Dansity"\n(Sentient Density)',
+    title:'"Dansity" — The Sentient Density Beneath the Visible (Core Proposition)',
+    details:{
+      title:'"Dansity" — The Sentient Density Beneath the Visible',
+      sub:'Core Proposition · A Coined Term',
+      body:`Paquet coins the word <b>"dansity"</b> &mdash; a deliberate near-homophone of "density" &mdash; to name a dimension of things that can never be captured directly: an inner "within" with no corresponding "without." All that is visible conceals more than it reveals &mdash; "the skin conceals more than it reveals." Painting's task is not to reproduce the visible but to give solidity to what is necessarily missing from it, letting the dansity of sentience arrive within the visible. From the 1949 watercolor <i>Crying Woman</i> onward, Paquet reads Botero's entire oeuvre as a sustained pursuit of this dansity through figurative volume.`,
+      source:'Chapters I&ndash;V, esp. pp.16&ndash;22, 105'
+    }
+  },
+
+  // ---- Theoretical pillars ----
+  { id:'solidity', group:'pillar',
+    label:'Solidity\n(Figurative Solidity)',
+    title:'Solidity — Painting That Endures',
+    details:{
+      title:'Solidity — Painting That Endures',
+      sub:'Theoretical Pillar · Chapter II',
+      body:`Solidity is both a physical and a metaphysical value for Botero: a desire for paintings that endure materially, resisting the wear of time, and that endure conceptually, offering "sure footing" for a new way of seeing. A solid painting renders visible a possibility of seeing that did not exist before it. Paquet compares Botero to Mantegna &mdash; "a painter of solidity if ever there was one" &mdash; whose figures carry "the weight and hardness of stone," focused not on fleeting historical events but on what endures through time.`,
+      source:'Chapter II, pp.23&ndash;31'
+    }
+  },
+  { id:'plasticity', group:'pillar',
+    label:'Plasticity\n(Form & Living Force)',
+    title:'Plasticity — Form Tied to a Living Force',
+    details:{
+      title:'Plasticity — Form Tied to a Living Force',
+      sub:'Theoretical Pillar · Chapter II',
+      body:`When Botero saw the disproportionately large hole he had sketched in a mandolin and exclaimed, "My God, this object is monumental: its plasticity is enormous," he named the discovery that would define his style. In the classical Greek sense, plasticity designates form not as "a rigid contour or a hollow envelope" but as form tied to the generative force that brings it into existence &mdash; nature as an animate, living principle rather than a dead model (a "still life," literally <i>nature morte</i>). Botero's volumes are this plasticity made visible.`,
+      source:'Chapter II, pp.19&ndash;23'
+    }
+  },
+  { id:'immanence_transcendence', group:'pillar',
+    label:'Immanence &\nTranscendence',
+    title:'The Interplay of Levels: Immanence and Transcendence',
+    details:{
+      title:'The Interplay of Levels: Immanence and Transcendence',
+      sub:'Theoretical Pillar · Chapter III',
+      body:`Every Botero canvas works on two levels at once: the <b>immanent</b> level of the canvas itself &mdash; paint, brush, the artist's body, the literal surface &mdash; and the <b>transcendent</b> level of what the painting opens onto beyond itself. A painting is not a mirror; unlike a mirror, which is "loyal to what is reflected," the canvas is "essentially unfaithful," and it is this infidelity &mdash; the gap between the world captured and the act of capturing it &mdash; that lets transcendence arise from immanence. Botero's deliberate, almost ritual attention to brushes, canvas and posture is what makes this transcendence possible.`,
+      source:'Chapter III, pp.69&ndash;77'
+    }
+  },
+  { id:'disproportion', group:'pillar',
+    label:'Disproportion &\nFigurative Monumentality',
+    title:'Disproportion as Figurative Monumentality',
+    details:{
+      title:'Disproportion as Figurative Monumentality',
+      sub:'Theoretical Pillar · "Boterism"',
+      body:`Disproportion &mdash; the enlarged mandolin hole, the small man with an enormous guitar, the swollen fruit and figures &mdash; is not deformation or caricature. It is "legitimate disproportion," a rigorous principle Botero applies systematically: by distending form from within without eliminating it, painting liberates a "sentient thrust" that ordinary vision suppresses. Paquet calls this style <b>"Boterism"</b> &mdash; a way of seeing the world rooted in a technique, in which roundness is never round enough to fully contain what it must make visible.`,
+      source:'Chapter III, pp.71&ndash;79; Chapter VI, p.135'
+    }
+  },
+  { id:'style_no_concept', group:'pillar',
+    label:'Style and Communication\nWithout Concept',
+    title:'Style and Communication Without Concept',
+    details:{
+      title:'Style and Communication Without Concept',
+      sub:'Theoretical Pillar · Chapter IV',
+      body:`Painting "is far from all chatter": it communicates something ineffable that resists translation into concepts, criticism, or words &mdash; "it's impossible to talk a good painting." Paquet compares Botero's pictorial language to Mozart's music: like Mozart, Botero did not invent a private code (a code only one person understands communicates nothing to anyone else), but worked entirely within inherited codes &mdash; the Quattrocento, Vel&aacute;zquez, Ingres, Bonnard &mdash; while remaining unmistakably himself. Style, here, is communication that happens beneath and beyond concept.`,
+      source:'Chapter IV, pp.99&ndash;106'
+    }
+  },
+
+  // ---- Key concepts ----
+  { id:'visible_sentient', group:'concept',
+    label:'The Visible\n& The Sentient',
+    title:'The Visible and the Sentient',
+    details:{
+      title:'The Visible and the Sentient',
+      sub:'Key Concept · le visible / le sensible',
+      body:`The foundational dualism of the book. "The visible" is what painting shows; "the sentient" is the invisible, opaque "thickness" that makes visibility possible in the first place &mdash; without it, "light would be transparent" and therefore itself invisible. Painting's task is not to copy the visible but to give an image to what is necessarily missing from it: "painting presents that which is lacking in all presentation." The difference between the visible and the sentient is never eliminated &mdash; only "assembled into an individuated whole" within the work.`,
+      source:'Chapter I, pp.16&ndash;22'
+    }
+  },
+  { id:'reflective_eye', group:'concept',
+    label:'The Reflective Eye\n(after Kant)',
+    title:'The "Adhering" Eye vs. the "Reflective" Eye',
+    details:{
+      title:'The "Adhering" Eye vs. the "Reflective" Eye',
+      sub:'Key Concept · after Kant',
+      body:`Borrowing from Kant, Paquet distinguishes the <b>"adhering eye"</b> &mdash; which applies pre-existing criteria and norms to what it sees, and so can recognize but not really teach &mdash; from the <b>"reflective eye,"</b> which determines its own criteria from within what it sees. To follow Botero's creative act is to follow this second eye: a way of seeing "cultivated" anew with every painting, returning each time to its own origin (the 1956 mandolin) in order to produce a different version of the same founding idea.`,
+      source:'Chapter III, pp.72&ndash;73'
+    }
+  },
+  { id:'presentation', group:'concept',
+    label:'Presentation,\nnot Representation',
+    title:'Presentation, Not Representation',
+    details:{
+      title:'Presentation, Not Representation',
+      sub:'Key Concept',
+      body:`Botero's paintings are not representations of a pre-existing reality, nor illusions of depth built through classical perspective. Paquet calls this <b>"presentation"</b>: "moving towards things without giving them flesh or blood." The painting produces a reality in front of the viewer's eyes that did not exist before in the form the canvas reveals it. Simulated perspectival volume is "neutral" and incompatible with the intense, willed volume of Botero's forms, which bends the whole composition to its roundness.`,
+      source:'Chapter III, pp.76&ndash;79'
+    }
+  },
+
+  // ---- Artistic dialogues ----
+  { id:'cubism', group:'influence',
+    label:'Cubism\n(Picasso, Braque)',
+    title:'Cubism: Volume in Painting',
+    details:{
+      title:'Cubism: Volume in Painting',
+      sub:'Artistic Dialogue · Picasso & Braque',
+      body:`In Mexico City in 1956, Botero was researching Cubism's central project &mdash; "volume in painting," the attempt to seize an object's three-dimensionality by imaginatively circling it (Max Loreau wrote of Picasso treating "the object in painting [as] an imaginary sculpture"). Botero's mandolin epiphany happened inside this Cubist problem, but he "stopped midway": rather than following Cubism toward a purely conceptual, abstract object, he kept "an eye more corporeal than mental," fusing a single viewpoint with an impossible classical volume.`,
+      source:'Chapter II, pp.19&ndash;22'
+    }
+  },
+  { id:'mantegna', group:'influence',
+    label:'Andrea Mantegna',
+    title:'Andrea Mantegna — A Painter of Solidity',
+    details:{
+      title:'Andrea Mantegna — A Painter of Solidity',
+      sub:'Artistic Dialogue · Camera degli Sposi',
+      body:`Mantegna, for Paquet, is the Renaissance painter of solidity par excellence &mdash; figures with "the weight and hardness of stone," indifferent to the ephemeral historical event in favor of what endures. In the <i>Camera degli Sposi</i> fresco (Gonzaga Ducal Palace, Mantua), an undeterminable everyday court scene becomes eternal through sheer truthfulness. Botero visited the <i>Camera degli Sposi</i> during his Italian travels, and his prize-winning 1958 painting <i>The Conjugal Bedroom</i> is explicitly an "Homage to Mantegna."`,
+      source:'Chapter II, pp.30&ndash;31'
+    }
+  },
+  { id:'magritte', group:'influence',
+    label:'René Magritte',
+    title:'René Magritte — The Act of Resemblance',
+    details:{
+      title:'René Magritte — The Act of Resemblance',
+      sub:'Artistic Dialogue · Mystery',
+      body:`Magritte described the painter's task as "the act of resemblance" &mdash; adjoining to the image of the world that which allows the world to be: mystery. Paquet, author of a separate study of Magritte ("Magritte or the Eclipse of Being"), uses this idea to explain how Botero's apparent reduction of three dimensions to two is, paradoxically, the conquest of "a fourth dimension" &mdash; a dimension that holds the other three together rather than flattening them.`,
+      source:'Chapter I, pp.18, 22 (note)'
+    }
+  },
+  { id:'quattrocento', group:'influence',
+    label:'The Quattrocento\n& Italian Masters',
+    title:'The Quattrocento and the Italian Masters',
+    details:{
+      title:'The Quattrocento and the Italian Masters',
+      sub:'Artistic Dialogue · Florence, Piero della Francesca, Uccello',
+      body:`Botero's formation ran through the summits of Italian painting: studying fresco technique (Giotto, Andrea del Castagno) at Florence's Accademia di San Marco, attending Roberto Longhi's lectures on the Quattrocento, and being struck by Piero della Francesca's <i>Queen of Sheba</i>. Paquet argues this dialogue with tradition is what lets Botero's modernity meet the Quattrocento on equal terms &mdash; crossing trees "the way Uccello crossed swords," and turning <i>Mona Lisa, Age Twelve</i> into "a sincere and forthright homage" to Leonardo through difference rather than imitation.`,
+      source:'Chapter II, p.22; Chapter III, p.66; Biography, 1953'
+    }
+  },
+  { id:'precolumbian', group:'influence',
+    label:'Pre-Columbian Art vs.\nAbstract Expressionism',
+    title:'Pre-Columbian Roots vs. American Abstract Expressionism',
+    details:{
+      title:'Pre-Columbian Roots vs. American Abstract Expressionism',
+      sub:'Artistic Dialogue · Quimbaya pottery, Rothko, Pollock',
+      body:`Arriving in New York as a young Colombian, Botero set himself against the "abstract bitterness" of Rothko and Pollock and the cult of insignificance Paquet associates with Action Painting &mdash; lines that "lash out in all directions with neither a beginning nor a center." Instead, Botero fused the zoomorphic and anthropomorphic forms of Quimbaya pre-Columbian pottery with the great tradition of the Italian Renaissance &mdash; an "opening up to the object" and "magnification of life" that, in Paquet's polemical view, 1960s American painting had not yet achieved.`,
+      source:'Chapter V, pp.102&ndash;105'
+    }
+  },
+
+  // ---- Key works ----
+  { id:'crying_woman', group:'work',
+    label:'Crying Woman\n(1949)',
+    title:'Crying Woman (1949) — Watercolor, 56 × 43 cm',
+    details:{
+      title:'Crying Woman (1949)',
+      sub:'Key Work · Chapter I · Watercolor, 56 &times; 43 cm',
+      body:`Paquet opens the entire book with this early watercolor of an anonymous crying woman. Botero painted neither tears nor eyes, yet the work delivers "an expression of pain that longed to go beyond expression" &mdash; "the expression of expression." For Paquet this is painting's founding gesture in miniature: not the copying of a model, but the revelation of what the model itself does not show &mdash; pain solidified and given an image, without being eliminated.`,
+      source:'Chapter I, pp.13&ndash;18'
+    }
+  },
+  { id:'still_life_mandolin', group:'work',
+    label:'Still Life with Mandolin\n(1956)',
+    title:'Still Life with Mandolin (1956)',
+    details:{
+      title:'Still Life with Mandolin (1956)',
+      sub:'Key Work · The Founding Epiphany',
+      body:`Painted in Mexico City in 1956, this still life records the moment Botero, sketching a mandolin, drew its sound-hole disproportionately large and recognized: "My God, this object is monumental: its plasticity is enormous." Together with <i>Still Life with Musical Instruments</i> (1959), it marks Botero's decisive turn from Cubist volume-research toward his own definitive style &mdash; the origin point to which, Paquet argues, every later work returns to produce "a different version" of the same founding idea.`,
+      source:'Chapter II, pp.18&ndash;23; Biography, 1956'
+    }
+  },
+  { id:'homage_mantegna', group:'work',
+    label:'The Conjugal Bedroom\n(Homage to Mantegna, 1958)',
+    title:'The Conjugal Bedroom (Homage to Mantegna), 1958',
+    details:{
+      title:'The Conjugal Bedroom (Homage to Mantegna), 1958',
+      sub:'Key Work · First Prize, 21st Salon, Bogot&aacute;',
+      body:`Painted the year after Botero's first trip to the United States, this work &mdash; whose title openly names its debt ("La Camera degli Sposi / Omaggio a Mantegna") &mdash; won first prize at the 21st Salon in Bogot&aacute; in 1958. It is the clearest documentary link between Botero's visit to Mantegna's frescoed bedroom in the Gonzaga Ducal Palace and Paquet's reading of Botero as Mantegna's heir in the pursuit of figurative solidity.`,
+      source:'Biography, 1958'
+    }
+  },
+  { id:'mona_lisa', group:'work',
+    label:'Mona Lisa, Age Twelve\n(1959)',
+    title:'Mona Lisa, Age Twelve (1959)',
+    details:{
+      title:'Mona Lisa, Age Twelve (1959)',
+      sub:'Key Work · Museum of Modern Art, New York',
+      body:`Painted in 1959 and acquired by MoMA in 1961, <i>Mona Lisa, Age Twelve</i> takes painting's most over-coded image and renders it anew through Botero's volumetric "difference." For Paquet this is the model of how Botero pays tribute to the masters: not through imitation, but &mdash; in the spirit of Hegel's account of philosophy as works of mind that "share an affinity and that above all are different" &mdash; through a difference that is itself "the best of tributes" to Leonardo.`,
+      source:'Chapter III, p.69; Biography, 1959/1961'
+    }
+  },
+
+  // ---- Chapters ----
+  { id:'ch1', group:'chapter',
+    label:'Chapter I\nThe First Steps',
+    title:'Chapter I: The First Steps',
+    details:{
+      title:'Chapter I: The First Steps',
+      sub:'Chapter I &middot; pp.9&ndash;22',
+      body:`Opens with an extended reading of the 1949 watercolor <i>Crying Woman</i> to establish the book's foundational vocabulary: the visible and the sentient, "dansity," and painting as a path toward what is missing from the image rather than a copy of what is given. Closes with Botero's 1956 epiphany in Mexico City before the mandolin sketch &mdash; the moment that, in Paquet's account, "Botero exists as Botero."`,
+      source:'pp.9&ndash;22'
+    }
+  },
+  { id:'ch2', group:'chapter',
+    label:'Chapter II\nSolidity and Plasticity',
+    title:'Chapter II: Solidity and Plasticity',
+    details:{
+      title:'Chapter II: Solidity and Plasticity',
+      sub:'Chapter II &middot; pp.23&ndash;68',
+      body:`The longest chapter. Traces Botero's dialogue with Cubism (Picasso, Braque) through the 1956&ndash;59 still lifes, defines "solidity" and "plasticity" as the twin values that orient his work, and reads Mantegna as the Renaissance ancestor of Botero's pursuit of figurative weight and endurance &mdash; culminating in the 1958 <i>Conjugal Bedroom: Homage to Mantegna</i>.`,
+      source:'pp.23&ndash;68'
+    }
+  },
+  { id:'ch3', group:'chapter',
+    label:'Chapter III\nThe Interplay of Levels',
+    title:'Chapter III: The Interplay of Levels — Immanence and Transcendence',
+    details:{
+      title:'Chapter III: The Interplay of Levels — Immanence and Transcendence',
+      sub:'Chapter III &middot; pp.69&ndash;98',
+      body:`Develops "Boterism" as a way of seeing rooted in a technique, examines the canvas as a site where the immanent (paint, brush, the artist's deliberate "inorganic" procedures) and the transcendent (what the work opens onto beyond itself) interact, and analyses works such as <i>Mona Lisa, Age Twelve</i>, <i>Self-Portrait: The Day of My First Communion</i>, and <i>Male Study</i> as case studies in disproportion and figurative monumentality.`,
+      source:'pp.69&ndash;98'
+    }
+  },
+  { id:'ch4', group:'chapter',
+    label:'Chapter IV\nStyle and Communication\nWithout Concept',
+    title:'Chapter IV: Style and Communication Without Concept',
+    details:{
+      title:'Chapter IV: Style and Communication Without Concept',
+      sub:'Chapter IV &middot; pp.99&ndash;106',
+      body:`Argues that great painting communicates something ineffable that escapes concept and criticism &mdash; "it's impossible to talk a good painting." Compares Botero's relationship to inherited pictorial codes (the Quattrocento, Vel&aacute;zquez, Ingres, Bonnard) to Mozart's relationship to inherited musical forms, and draws on Aristotle's notion of "the being that was being" (quiddity) to describe how a singular work becomes universal.`,
+      source:'pp.99&ndash;106'
+    }
+  },
+  { id:'ch5', group:'chapter',
+    label:'Chapter V\nForm as Presence &\nAbsence of Sentience',
+    title:'Chapter V: Form as Presence and Absence of Sentience',
+    details:{
+      title:'Chapter V: Form as Presence and Absence of Sentience',
+      sub:'Chapter V &middot; pp.107&ndash;134',
+      body:`Positions Botero against the "abstract bitterness" of Rothko, Pollock, and Action Painting, tracing instead his roots in Quimbaya pre-Columbian pottery fused with the Italian Renaissance. Argues that painting "destroys ontological certitude," restoring "presence" to objects that representational painting and pure abstraction alike had deprived of it &mdash; bringing "dansity" back into visibility.`,
+      source:'pp.107&ndash;134'
+    }
+  },
+  { id:'ch6', group:'chapter',
+    label:'Chapter VI\nColombia Seen Through\nIts Own Eyes',
+    title:'Chapter VI: Colombia Seen Through Its Own Eyes',
+    details:{
+      title:'Chapter VI: Colombia Seen Through Its Own Eyes',
+      sub:'Chapter VI &middot; pp.135&ndash;138',
+      body:`The book's conclusion. Argues that Botero's "legitimate disproportion" is in perfect accordance with Colombia itself &mdash; a country where "everything seems exaggerated," from giant ferns to ornate churches. Botero gave Colombia "a vision that every Colombian can identify with," becoming, in Paquet's words, "one of the founders of Colombian culture" and bringing sentience to shine "at the very center of what is visible."`,
+      source:'pp.135&ndash;138'
+    }
+  },
+
+  // ---- Life & legacy ----
+  { id:'formation', group:'life',
+    label:'Medellín & Formation\n(1932&ndash;1955)',
+    title:'Medellín, Bogotá, Madrid, Florence (1932–1955)',
+    details:{
+      title:'Medell&iacute;n, Bogot&aacute;, Madrid, Florence (1932&ndash;1955)',
+      sub:'Life & Legacy · Early Formation',
+      body:`Born in Medell&iacute;n, Colombia, on 19 April 1932, Botero held his first exhibitions in Bogot&aacute; in 1948&ndash;52. With his prize and sale earnings he traveled to Europe in 1952: a year at Madrid's Academia de San Fernando studying Vel&aacute;zquez and Goya at the Prado (and discovering Piero della Francesca); a summer in Paris preferring the Louvre to the Mus&eacute;e National d'Art Moderne; and, from late 1953, a studio in Florence, studying fresco technique and attending Roberto Longhi's lectures on the Quattrocento.`,
+      source:'Biography, 1932&ndash;1955'
+    }
+  },
+  { id:'legacy', group:'life',
+    label:'Mexico, the World,\nand Colombia',
+    title:'1956 and After: Mexico, New York, Paris — and Home to Colombia',
+    details:{
+      title:'1956 and After: Mexico, New York, Paris — and Home to Colombia',
+      sub:'Life & Legacy · International Career & Cultural Icon',
+      body:`The move to Mexico in 1956 produced Botero's definitive style; exhibitions followed in Washington, New York (MoMA acquired <i>Mona Lisa, Age Twelve</i> in 1961), S&atilde;o Paulo, and across Europe, with studios eventually in Greenwich Village, Paris, and Pietrasanta. Yet Paquet insists Botero's deepest happiness remained in Medell&iacute;n's poorest neighborhoods, where a stranger shouting "Fernando Botero!" from a crowd "was worth all the books in the world." Botero donated paintings and sculptures to Medell&iacute;n's Antioquia Museum (1977, 1984), becoming, for Paquet, a founder of modern Colombian cultural identity.`,
+      source:'Biography, 1956&ndash;1985; Chapter VI'
+    }
+  },
+];
+
+const edgesRaw = [
+  // core <-> pillars
+  { from:'dansity', to:'solidity', label:'Endurance of the Sentient' },
+  { from:'dansity', to:'plasticity', label:'Form as Living Force' },
+  { from:'dansity', to:'immanence_transcendence', label:'Where Dansity Surfaces' },
+  { from:'dansity', to:'disproportion', label:'Disproportion Reveals Dansity' },
+  { from:'dansity', to:'style_no_concept', label:'Ineffable Dansity' },
+
+  // concepts
+  { from:'visible_sentient', to:'dansity', label:'Founding Dualism' },
+  { from:'reflective_eye', to:'disproportion', label:'A Way of Seeing' },
+  { from:'presentation', to:'immanence_transcendence', label:'Not Mirror, Not Copy' },
+
+  // influences
+  { from:'cubism', to:'plasticity', label:'Starting Point' },
+  { from:'cubism', to:'still_life_mandolin', label:'Research Context' },
+  { from:'mantegna', to:'solidity', label:'Painter of Solidity' },
+  { from:'mantegna', to:'homage_mantegna', label:'Direct Homage' },
+  { from:'magritte', to:'visible_sentient', label:'Act of Resemblance' },
+  { from:'quattrocento', to:'mona_lisa', label:'Dialogue with the Masters' },
+  { from:'quattrocento', to:'formation', label:'Florence, 1953' },
+  { from:'precolumbian', to:'ch5', label:'Roots vs. Abstract Expressionism' },
+
+  // works
+  { from:'crying_woman', to:'ch1', label:'Opens the Book' },
+  { from:'crying_woman', to:'dansity', label:'First Articulation' },
+  { from:'still_life_mandolin', to:'ch2', label:'Founding Epiphany' },
+  { from:'still_life_mandolin', to:'plasticity', label:'Names Plasticity' },
+  { from:'homage_mantegna', to:'ch2', label:'Prize-Winning Tribute' },
+  { from:'mona_lisa', to:'ch3', label:'Disproportion in Practice' },
+
+  // chapter spine (reading order)
+  { from:'ch1', to:'ch2', spine:true },
+  { from:'ch2', to:'ch3', spine:true },
+  { from:'ch3', to:'ch4', spine:true },
+  { from:'ch4', to:'ch5', spine:true },
+  { from:'ch5', to:'ch6', spine:true },
+
+  // chapter <-> content
+  { from:'ch1', to:'visible_sentient', label:'Founding Vocabulary' },
+  { from:'ch2', to:'solidity', label:'Defines Solidity' },
+  { from:'ch2', to:'plasticity', label:'Defines Plasticity' },
+  { from:'ch3', to:'immanence_transcendence', label:'Theoretical Core' },
+  { from:'ch3', to:'disproportion', label:'Boterism in Practice' },
+  { from:'ch4', to:'style_no_concept', label:'Theoretical Core' },
+  { from:'ch5', to:'dansity', label:'Dansity Returns to Visibility' },
+  { from:'ch6', to:'legacy', label:'Colombia & Legacy' },
+
+  // life
+  { from:'formation', to:'still_life_mandolin', label:'Leads to 1956' },
+  { from:'legacy', to:'dansity', label:'Sentience Made National' },
+];
+
+// ---------- build vis datasets ----------
+const visNodes = nodes.map(n=>{
+  const c = GROUPS[n.group].color;
+  return {
+    id:n.id,
+    label:n.label,
+    title:n.title,
+    shape:'box',
+    shapeProperties:{ borderRadius: 8 },
+    margin: n.id==='dansity' ? 14 : 10,
+    widthConstraint: { maximum: n.id==='dansity' ? 230 : 190 },
+    font:{ color:'#13141d', face:'Noto Sans TC', size: n.id==='dansity' ? 16 : 13,
+           bold:n.id==='dansity', multi:true, align:'center' },
+    color:{
+      background:c,
+      border:hexToRgba(c,1),
+      highlight:{ background:c, border:'#ffffff' },
+      hover:{ background:c, border:'#ffffff' }
+    },
+    borderWidth: n.id==='dansity' ? 3 : 1.5,
+    group:n.group
+  };
+});
+
+const visEdges = edgesRaw.map((e,i)=>{
+  if(e.spine){
+    return {
+      id:'e'+i, from:e.from, to:e.to,
+      dashes:true, arrows:{to:{enabled:true, scaleFactor:0.4}},
+      color:{ color:'rgba(108,178,245,0.35)', highlight:'#6cb2f5' },
+      width:1, smooth:{type:'continuous'}
+    };
+  }
+  return {
+    id:'e'+i, from:e.from, to:e.to,
+    label:e.label||'',
+    arrows:{to:{enabled:true, scaleFactor:0.5}},
+    color:{ color:'rgba(180,190,210,0.45)', highlight:'#f0c75e' },
+    font:{ color:'#aab0c4', size:10, strokeWidth:0, align:'top', background:'rgba(11,13,22,0.55)' },
+    width:1.4,
+    smooth:{type:'continuous', roundness:0.25}
+  };
+});
+
+const nodesDS = new vis.DataSet(visNodes);
+const edgesDS = new vis.DataSet(visEdges);
+const detailsMap = {};
+nodes.forEach(n=>detailsMap[n.id]=n.details);
+
+const container = document.getElementById('network');
+const data = { nodes:nodesDS, edges:edgesDS };
+const options = {
+  layout:{ improvedLayout:true },
+  interaction:{ hover:true, tooltipDelay:120, navigationButtons:false, zoomView:true, dragView:true },
+  physics:{
+    barnesHut:{ gravitationalConstant:-9000, centralGravity:0.35, springLength:160, springConstant:0.045, damping:0.5, avoidOverlap:0.4 },
+    stabilization:{ iterations:250 }
+  }
+};
+const network = new vis.Network(container, data, options);
+
+network.once('stabilizationIterationsDone', ()=>{
+  network.setOptions({ physics:false });
+  network.fit({ animation:false });
+});
+
+// ---------- sidebar: default panel ----------
+const infoContent = document.getElementById('info-content');
+const backLink = document.getElementById('back-link');
+
+function renderOverview(){
+  backLink.style.display='none';
+  infoContent.innerHTML = `
+    <h2>Fernando Botero: Philosophy of the Creative Act</h2>
+    <div class="formula">"Dansity"</div>
+    <p>This graph maps Marcel Paquet's 1992 study of Fernando Botero. Its central claim: Botero's monumental, swollen figures are not stylistic exaggeration for its own sake, but a sustained philosophical pursuit of what Paquet calls <b>"dansity"</b> &mdash; the invisible, sentient density that underlies and exceeds everything visible.</p>
+    <p>Explore the book's five theoretical pillars (solidity, plasticity, immanence &amp; transcendence, disproportion, style without concept), its key concepts, the artists Botero is read against (Cubism, Mantegna, Magritte, the Quattrocento, Pre-Columbian art), landmark works such as <i>Crying Woman</i> and <i>Still Life with Mandolin</i>, the book's six chapters, and Botero's life and Colombian legacy.</p>
+    <div class="source">Click any node in the graph to see a detailed description of that concept and its place within the book.</div>
+  `;
+}
+renderOverview();
+
+function renderDetail(id){
+  const d = detailsMap[id];
+  if(!d) return;
+  backLink.style.display='block';
+  infoContent.innerHTML = `
+    <span class="tag" style="border-color:${GROUPS[nodes.find(n=>n.id===id).group].color}; color:${GROUPS[nodes.find(n=>n.id===id).group].color}">
+      ${GROUPS[nodes.find(n=>n.id===id).group].label}
+    </span>
+    <h2>${d.title}</h2>
+    <p style="color:var(--text-sub); font-size:.78rem; margin-top:-6px;">${d.sub}</p>
+    <p>${d.body}</p>
+    <div class="source">Source: ${d.source}</div>
+  `;
+}
+backLink.addEventListener('click', ()=>{
+  network.unselectAll();
+  clearHighlight();
+  renderOverview();
+});
+
+// ---------- highlight on click ----------
+function clearHighlight(){
+  nodesDS.update(visNodes.map(n=>({ id:n.id, color:n.color, font:n.font, opacity:1 })));
+  edgesDS.update(visEdges.map(e=>({ id:e.id, color:e.color, font:e.font })));
+}
+
+function focusNode(id){
+  const connectedNodes = new Set([id, ...network.getConnectedNodes(id)]);
+  const connectedEdges = new Set(network.getConnectedEdges(id));
+
+  nodesDS.update(visNodes.map(n=>{
+    const dim = !connectedNodes.has(n.id);
+    const c = GROUPS[n.group].color;
+    return {
+      id:n.id,
+      color: dim
+        ? { background:hexToRgba(c,0.10), border:hexToRgba(c,0.18) }
+        : n.color,
+      font: dim
+        ? { color:'rgba(232,233,243,0.18)', face:'Noto Sans TC', size:n.font.size, bold:n.font.bold, multi:true, align:'center' }
+        : n.font
+    };
+  }));
+
+  edgesDS.update(visEdges.map(e=>{
+    const dim = !connectedEdges.has(e.id);
+    return {
+      id:e.id,
+      color: dim
+        ? { color:'rgba(150,150,170,0.04)' }
+        : e.color,
+      font: dim
+        ? { color:'rgba(170,176,196,0)', strokeWidth:0 }
+        : e.font
+    };
+  }));
+}
+
+network.on('click', params=>{
+  if(params.nodes.length>0){
+    const id = params.nodes[0];
+    focusNode(id);
+    renderDetail(id);
+  } else {
+    clearHighlight();
+    renderOverview();
+  }
+});
+
+// ---------- legend ----------
+const legendList = document.getElementById('legend-list');
+const hiddenGroups = new Set();
+
+Object.entries(GROUPS).forEach(([key,info])=>{
+  const item = document.createElement('div');
+  item.className='legend-item';
+  item.innerHTML = `
+    <div class="legend-dot" style="background:${info.color}"></div>
+    <div class="legend-text">${info.label}<small>${info.desc}</small></div>
+  `;
+  item.addEventListener('click', ()=>{
+    if(hiddenGroups.has(key)){ hiddenGroups.delete(key); item.classList.remove('off'); }
+    else { hiddenGroups.add(key); item.classList.add('off'); }
+    nodesDS.update(visNodes.filter(n=>n.group===key).map(n=>({ id:n.id, hidden:hiddenGroups.has(key) })));
+  });
+  legendList.appendChild(item);
+});
+
+// ---------- chapter quick nav ----------
+const chapterNav = document.getElementById('chapter-nav');
+['ch1','ch2','ch3','ch4','ch5','ch6'].forEach((id,i)=>{
+  const btn = document.createElement('button');
+  btn.textContent = `Ch. ${i+1}`;
+  btn.addEventListener('click', ()=>{
+    network.selectNodes([id]);
+    focusNode(id);
+    renderDetail(id);
+    network.focus(id, { scale:1.0, animation:{duration:400} });
+  });
+  chapterNav.appendChild(btn);
+});
+
+// ---------- reset ----------
+document.getElementById('reset-btn').addEventListener('click', ()=>{
+  network.unselectAll();
+  clearHighlight();
+  renderOverview();
+  Object.keys(GROUPS).forEach(key=>{
+    if(hiddenGroups.has(key)){
+      hiddenGroups.delete(key);
+      nodesDS.update(visNodes.filter(n=>n.group===key).map(n=>({ id:n.id, hidden:false })));
+    }
+  });
+  document.querySelectorAll('.legend-item').forEach(el=>el.classList.remove('off'));
+  network.fit({ animation:{duration:400} });
+});
+
+window.addEventListener('resize', ()=>network.redraw());
+</script>
+</body>
+</html>

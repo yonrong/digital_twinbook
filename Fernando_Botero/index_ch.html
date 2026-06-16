@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>費爾南多·波特羅：創作行為的哲學｜知識圖譜</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700;900&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/vis-network@9.1.9/standalone/umd/vis-network.min.js"></script>
+<style>
+  :root{
+    --bg-1:#0b0d16;
+    --bg-2:#161a2c;
+    --panel:rgba(255,255,255,0.045);
+    --panel-border:rgba(255,255,255,0.10);
+    --text-main:#e8e9f3;
+    --text-sub:#9aa0b8;
+    --gold:#f0c75e;
+    --green:#5fd38d;
+    --purple:#b48af0;
+    --blue:#6cb2f5;
+    --orange:#f5a25f;
+    --teal:#5fe0d3;
+    --rose:#f5829e;
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;margin:0;}
+  body{
+    display:flex;flex-direction:column;
+    font-family:'Noto Sans TC','Microsoft JhengHei','PingFang TC',sans-serif;
+    background:radial-gradient(ellipse at 50% -10%, var(--bg-2) 0%, var(--bg-1) 60%);
+    color:var(--text-main);
+  }
+  header{
+    position:relative;
+    flex:0 0 auto;
+    text-align:center;
+    padding:22px 16px 14px;
+    border-bottom:1px solid var(--panel-border);
+    background:linear-gradient(180deg, rgba(240,199,94,0.06), transparent);
+  }
+  header h1{
+    font-family:'Noto Serif TC',serif;
+    font-weight:900;
+    font-size:1.7rem;
+    margin:0 0 4px;
+    background:linear-gradient(135deg,#f0c75e,#f5a25f 60%,#b48af0);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    letter-spacing:.04em;
+  }
+  header .subtitle{
+    font-family:'Noto Serif TC',serif;
+    font-weight:700;
+    font-size:1.05rem;
+    color:var(--text-main);
+    margin:2px 0;
+  }
+  header .en{
+    font-size:.8rem;
+    color:var(--text-sub);
+    margin:4px 0 0;
+    letter-spacing:.02em;
+  }
+  .lang-switch{
+    position:absolute;
+    top:14px;
+    right:18px;
+    font-size:.78rem;
+  }
+  .lang-switch a{
+    color:var(--text-sub);
+    text-decoration:none;
+    border:1px solid var(--panel-border);
+    padding:4px 10px;
+    border-radius:999px;
+    transition:color .15s, border-color .15s;
+  }
+  .lang-switch a:hover{color:var(--gold);border-color:var(--gold);}
+  .layout{
+    flex:1 1 auto;
+    display:flex;
+    min-height:0;
+  }
+  .sidebar{
+    width:380px;
+    flex:0 0 380px;
+    overflow-y:auto;
+    padding:16px;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    border-right:1px solid var(--panel-border);
+  }
+  .panel{
+    background:var(--panel);
+    border:1px solid var(--panel-border);
+    border-radius:12px;
+    padding:14px 16px;
+    backdrop-filter:blur(6px);
+  }
+  .panel h2{
+    font-family:'Noto Serif TC',serif;
+    font-size:1.05rem;
+    margin:0 0 8px;
+    color:var(--gold);
+  }
+  .panel h3{
+    font-size:.8rem;
+    margin:0 0 6px;
+    color:var(--text-sub);
+    font-weight:500;
+    letter-spacing:.05em;
+    text-transform:uppercase;
+  }
+  .panel p{
+    font-size:.86rem;
+    line-height:1.75;
+    margin:0 0 8px;
+    color:var(--text-main);
+  }
+  .panel p:last-child{margin-bottom:0;}
+  .formula{
+    font-family:'Noto Serif TC',serif;
+    font-weight:900;
+    font-size:1.5rem;
+    text-align:center;
+    color:var(--gold);
+    margin:6px 0 10px;
+    letter-spacing:.06em;
+  }
+  .tag{
+    display:inline-block;
+    font-size:.72rem;
+    padding:2px 9px;
+    border-radius:999px;
+    margin:0 6px 8px 0;
+    border:1px solid var(--panel-border);
+    color:var(--text-sub);
+  }
+  .source{
+    font-size:.74rem;
+    color:var(--text-sub);
+    margin-top:8px;
+    padding-top:8px;
+    border-top:1px dashed var(--panel-border);
+  }
+  .back-link{
+    display:none;
+    cursor:pointer;
+    font-size:.78rem;
+    color:var(--blue);
+    margin-bottom:8px;
+    text-decoration:underline;
+  }
+  .legend-list{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+  }
+  .legend-item{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:.82rem;
+    cursor:pointer;
+    padding:5px 8px;
+    border-radius:8px;
+    border:1px solid transparent;
+    transition:background .15s, opacity .15s;
+    user-select:none;
+  }
+  .legend-item:hover{background:rgba(255,255,255,0.05);}
+  .legend-item.off{opacity:.35;}
+  .legend-dot{
+    width:13px;height:13px;border-radius:4px;flex:0 0 13px;
+  }
+  .legend-text small{display:block;color:var(--text-sub);font-size:.7rem;}
+  .chapter-nav{
+    display:flex;flex-wrap:wrap;gap:6px;
+  }
+  .chapter-nav button{
+    font-family:inherit;
+    font-size:.78rem;
+    padding:6px 10px;
+    border-radius:8px;
+    border:1px solid var(--panel-border);
+    background:rgba(108,178,245,0.08);
+    color:var(--text-main);
+    cursor:pointer;
+    transition:background .15s, transform .1s;
+  }
+  .chapter-nav button:hover{background:rgba(108,178,245,0.22);transform:translateY(-1px);}
+  main{
+    flex:1 1 auto;
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    min-width:0;
+  }
+  #network{
+    flex:1 1 auto;
+    min-height:400px;
+  }
+  .controls{
+    flex:0 0 auto;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    padding:8px 14px;
+    border-top:1px solid var(--panel-border);
+    background:rgba(0,0,0,0.18);
+    font-size:.78rem;
+    color:var(--text-sub);
+    flex-wrap:wrap;
+  }
+  .controls button{
+    font-family:inherit;
+    font-size:.78rem;
+    padding:6px 14px;
+    border-radius:8px;
+    border:1px solid var(--panel-border);
+    background:rgba(240,199,94,0.10);
+    color:var(--gold);
+    cursor:pointer;
+  }
+  .controls button:hover{background:rgba(240,199,94,0.22);}
+  footer{
+    flex:0 0 auto;
+    border-top:1px solid var(--panel-border);
+    padding:10px 16px;
+    font-size:.72rem;
+    color:var(--text-sub);
+    line-height:1.8;
+    background:rgba(0,0,0,0.15);
+  }
+  footer b{color:var(--text-main);}
+  @media (max-width:860px){
+    html,body{height:auto;min-height:100%;}
+    body{display:block;}
+    .layout{flex-direction:column;}
+    .sidebar{
+      width:auto;flex:0 0 auto;max-height:42vh;
+      border-right:none;border-bottom:1px solid var(--panel-border);
+    }
+    main{flex:0 0 auto;}
+    #network{height:60vh;min-height:320px;}
+    .controls{flex:0 0 auto;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="lang-switch"><a href="index_en.html">EN English</a> &nbsp;|&nbsp; <a href="index.html">&#8962; 首頁</a></div>
+  <h1>費爾南多·波特羅</h1>
+  <div class="subtitle">創作行為的哲學</div>
+  <div class="en">馬塞爾·帕凱（Marcel Paquet）1992年研究的互動知識圖譜 —— 堅實性・可塑性・感識度</div>
+</header>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="panel" id="info-panel">
+      <div class="back-link" id="back-link">← 返回總覽 Back to Overview</div>
+      <div id="info-content"></div>
+    </div>
+
+    <div class="panel">
+      <h3>圖例 Legend ｜ 點擊可顯示／隱藏該類別</h3>
+      <div class="legend-list" id="legend-list"></div>
+    </div>
+
+    <div class="panel">
+      <h3>章節脈絡 Chapter Flow</h3>
+      <div class="chapter-nav" id="chapter-nav"></div>
+    </div>
+
+    <div class="panel">
+      <h3>操作說明 How to Use</h3>
+      <p>
+        ・拖曳節點可重新排列，滾輪／手勢可縮放畫布。<br>
+        ・點擊任一節點，右側將顯示該概念的詳細說明，並以高亮呈現其關聯節點。<br>
+        ・點擊圖例項目可整類「降維」隱藏／顯示節點，幫助聚焦特定子系統。<br>
+        ・點擊「重置視圖」可恢復完整圖譜。
+      </p>
+    </div>
+  </aside>
+
+  <main>
+    <div id="network"></div>
+    <div class="controls">
+      <span>提示：點擊節點查看詳細說明；點擊空白處或「重置視圖」回到全覽。</span>
+      <button id="reset-btn">重置視圖 Reset View</button>
+    </div>
+  </main>
+</div>
+
+<footer>
+  <b>來源文件 Source Documents：</b>
+  馬塞爾·帕凱（Marcel Paquet），《波特羅：創作行為的哲學》<i>Botero: Philosophy of the Creative Act</i>，蘇珊·雷斯尼克（Susan Resnick）英譯，紐約：Mallard Press（BDD Promotional Book Company, Inc.），1992年（法文原版 &copy; 1985 Marcel Paquet）。ISBN 0-7924-5823-0。
+  &nbsp;節點說明中之頁碼，均依此英文版本。
+</footer>
+
+<script>
+const GROUPS = {
+  core:      { color:'#f0c75e', label:'核心命題 Core Proposition',   desc:'「感識度」（Dansity）—— 貫穿全書的自創核心術語' },
+  pillar:    { color:'#5fd38d', label:'理論支柱 Theoretical Pillars', desc:'全書依章節展開的主要論題' },
+  concept:   { color:'#b48af0', label:'關鍵概念 Key Concepts',        desc:'帕凱用以解讀波特羅繪畫的核心詞彙' },
+  influence: { color:'#5fe0d3', label:'藝術對話 Artistic Dialogues',  desc:'與波特羅相互參照的畫家與傳統' },
+  work:      { color:'#f5a25f', label:'重要作品 Key Works',           desc:'支撐全書論證的代表畫作' },
+  chapter:   { color:'#6cb2f5', label:'章節 Chapters',                desc:'全書六章的結構' },
+  life:      { color:'#f5829e', label:'生平與遺產 Life & Legacy',     desc:'波特羅的生平歷程與在哥倫比亞的文化遺產' }
+};
+
+function hexToRgba(hex, a){
+  const r=parseInt(hex.slice(1,3),16), g=parseInt(hex.slice(3,5),16), b=parseInt(hex.slice(5,7),16);
+  return `rgba(${r},${g},${b},${a})`;
+}
+
+const nodes = [
+  { id:'dansity', group:'core',
+    label:'感識度\n(Dansity)',
+    title:'「感識度」(Dansity) —— 可見之下的感性密度（核心命題）',
+    details:{
+      title:'「感識度」(Dansity) —— 可見之下的感性密度',
+      sub:'核心命題 · 一個自創術語',
+      body:`帕凱創造了「dansity」一詞——刻意製造出與「density」（密度）諧音的新字——用來指稱事物中一個永遠無法被直接捕捉的維度：一種沒有對應「外部」的內在「內部」。一切可見之物所遮蔽的，遠多於它所揭露的——「皮膚所遮蔽的，比它所揭露的更多」。繪畫的任務不是複製可見之物，而是賦予那必然從可見中缺席之物以實體，讓感性的「感識度」進入可見的範圍。從1949年水彩畫《哭泣的女人》開始，帕凱將波特羅的全部作品讀解為一場透過具象量體、持續追尋這種感識度的歷程。`,
+      source:'第一至五章，尤見第16–22頁、第105頁'
+    }
+  },
+
+  // ---- 理論支柱 ----
+  { id:'solidity', group:'pillar',
+    label:'堅實性\n(Figurative Solidity)',
+    title:'堅實性 —— 經得起時間的繪畫',
+    details:{
+      title:'堅實性 —— 經得起時間的繪畫',
+      sub:'理論支柱 · 第二章',
+      body:`對波特羅而言，堅實性同時是物理與形上學的價值：一種渴望——畫作能在材質上耐久，抵抗時間的磨損；同時在概念上也能耐久，為一種新的觀看方式提供「立足點」。一幅堅實的畫，使一種此前並不存在的觀看可能性變得可見。帕凱將波特羅比作曼帖那——「若世上真有所謂『堅實性畫家』，那就是他」——其人物具有「石頭的重量與硬度」，所關注的不是稍縱即逝的歷史事件，而是穿越時間而恆常的事物。`,
+      source:'第二章，第23–31頁'
+    }
+  },
+  { id:'plasticity', group:'pillar',
+    label:'可塑性\n(形與生命之力)',
+    title:'可塑性 —— 與生命之力相繫的形',
+    details:{
+      title:'可塑性 —— 與生命之力相繫的形',
+      sub:'理論支柱 · 第二章',
+      body:`當波特羅看著自己畫的曼陀林上那個比例失當、過大的音孔，驚呼「我的天，這個物體太雄偉了：它的可塑性多麼驚人」時，他道出了將定義其風格的發現。在古希臘的意義上，「可塑性」指的並非「僵硬的輪廓或空洞的外殼」，而是與賦予其存在的生成力相繫的形——自然作為一種有生命、能動的原則，而非死的模型（「靜物」，字面意思即「死去的自然」nature morte）。波特羅的量體，正是這種可塑性的可見化。`,
+      source:'第二章，第19–23頁'
+    }
+  },
+  { id:'immanence_transcendence', group:'pillar',
+    label:'內在性與\n超越性',
+    title:'層次的交互作用：內在性與超越性',
+    details:{
+      title:'層次的交互作用：內在性與超越性',
+      sub:'理論支柱 · 第三章',
+      body:`每一幅波特羅的畫作都同時在兩個層次上運作：畫布本身的「內在」層次——顏料、畫筆、藝術家的身體、表面本身；以及作品向自身之外開展的「超越」層次。一幅畫並非鏡子；與忠實反映影像的鏡子不同，畫布「本質上是不忠實的」，正是這種不忠實——所捕捉的世界與捕捉行為本身之間的落差——使超越得以從內在中浮現。波特羅對畫筆、畫布與身體姿態近乎儀式性的專注，正是使這種超越成為可能的條件。`,
+      source:'第三章，第69–77頁'
+    }
+  },
+  { id:'disproportion', group:'pillar',
+    label:'比例失衡與\n具象的雄偉性',
+    title:'比例失衡作為具象的雄偉性',
+    details:{
+      title:'比例失衡作為具象的雄偉性',
+      sub:'理論支柱 · 「波特羅主義」',
+      body:`比例失衡——那放大的曼陀林音孔、扛著巨大吉他的小個子男人、膨脹的水果與人物——並非變形或誇張漫畫。這是「合理的比例失衡」，波特羅有系統運用的一項嚴謹原則：透過由內向外撐脹形體而不使其瓦解，繪畫釋放出一種日常視覺所壓抑的「感性衝力」。帕凱稱這種風格為「波特羅主義」（Boterism）——一種根植於某種技法的觀看世界方式，其中的圓潤永遠不夠圓，因為它必須使某種東西變得可見。`,
+      source:'第三章，第71–79頁；第六章，第135頁'
+    }
+  },
+  { id:'style_no_concept', group:'pillar',
+    label:'風格與\n無須概念的溝通',
+    title:'風格與無須概念的溝通',
+    details:{
+      title:'風格與無須概念的溝通',
+      sub:'理論支柱 · 第四章',
+      body:`繪畫「遠離一切空談」：它傳達出某種無法言喻、抗拒被轉譯為概念、評論或語言的東西——「談論一幅好畫是不可能的」。帕凱將波特羅的繪畫語言比作莫札特的音樂：如同莫札特一樣，波特羅並未發明一套私人密碼（只有一人能懂的密碼，對任何人都無法傳達任何東西），而是完全在既有的編碼——文藝復興早期、維拉斯奎茲、安格爾、波納爾——之內工作，卻仍然無可置疑地是他自己。在此，風格就是發生在概念之下、之外的溝通。`,
+      source:'第四章，第99–106頁'
+    }
+  },
+
+  // ---- 關鍵概念 ----
+  { id:'visible_sentient', group:'concept',
+    label:'可見者\n與感性者',
+    title:'可見者與感性者',
+    details:{
+      title:'可見者與感性者',
+      sub:'關鍵概念 · le visible / le sensible',
+      body:`全書的根本二元對立。「可見者」是繪畫所呈現的；「感性者」則是那不可見、晦暗的「厚度」，正是它使可見性本身成為可能——若無它，「光將是透明的」，因而光本身也將不可見。繪畫的任務不是複製可見者，而是賦予那必然從可見中缺席之物以形象：「繪畫所呈現的，正是一切呈現中所欠缺的東西」。可見者與感性者之間的差異從未被消除——只是在作品中被「組合成一個個體化的整體」。`,
+      source:'第一章，第16–22頁'
+    }
+  },
+  { id:'reflective_eye', group:'concept',
+    label:'反思之眼\n（仿康德）',
+    title:'「依附之眼」與「反思之眼」',
+    details:{
+      title:'「依附之眼」與「反思之眼」',
+      sub:'關鍵概念 · 仿康德',
+      body:`借自康德，帕凱區分了「依附之眼」——將既有的標準與規範套用於所見之物，因此能夠辨認卻無法真正開創——與「反思之眼」——從所見之物本身決定其自身的標準。追隨波特羅的創作行為，就是追隨這第二種眼睛：一種隨著每一幅畫而重新「培養」的觀看方式，每次都回到自身的起點（1956年的曼陀林事件），以產生同一個奠基性想法的「另一個版本」。`,
+      source:'第三章，第72–73頁'
+    }
+  },
+  { id:'presentation', group:'concept',
+    label:'呈現，\n而非再現',
+    title:'呈現，而非再現',
+    details:{
+      title:'呈現，而非再現',
+      sub:'關鍵概念',
+      body:`波特羅的畫作並非對某個先存現實的再現，也不是透過古典透視法所構築的深度幻覺。帕凱稱此為「呈現」（presentation）：「朝向事物移動，卻不賦予它們血肉」。畫作在觀者眼前產生出一種此前並不以畫布所揭示的形式存在的現實。模擬的透視量體是「中性的」，與波特羅形體那種強烈、刻意的量體互不相容——後者使整個構圖都彎曲、屈從於它的圓潤。`,
+      source:'第三章，第76–79頁'
+    }
+  },
+
+  // ---- 藝術對話 ----
+  { id:'cubism', group:'influence',
+    label:'立體主義\n（畢卡索、布拉克）',
+    title:'立體主義：繪畫中的量體',
+    details:{
+      title:'立體主義：繪畫中的量體',
+      sub:'藝術對話 · 畢卡索與布拉克',
+      body:`1956年在墨西哥城，波特羅正研究立體主義的核心課題——「繪畫中的量體」，即試圖透過想像中環繞物體一圈，來捕捉其三維性（馬克斯·洛羅曾寫道，畢卡索把「畫中的物體當作一座想像的雕塑」）。波特羅的曼陀林靈光一閃，正是在這個立體主義式的問題之中發生的，但他「中途停下」：他並未隨立體主義走向純粹概念性、抽象化的物體，而是保留了「比心智更為肉體性的眼睛」，將單一視點與一種不可能存在的古典量體融合在一起。`,
+      source:'第二章，第19–22頁'
+    }
+  },
+  { id:'mantegna', group:'influence',
+    label:'安德烈亞·\n曼帖那',
+    title:'安德烈亞·曼帖那 —— 堅實性畫家',
+    details:{
+      title:'安德烈亞·曼帖那 —— 堅實性畫家',
+      sub:'藝術對話 · 新婚房',
+      body:`在帕凱看來，曼帖那是文藝復興時期堅實性畫家的典範——其人物具有「石頭的重量與硬度」，對稍縱即逝的歷史事件無動於衷，只關注那穿越時間而恆久之物。在《新婚房》壁畫（曼圖亞貢扎加公爵宮）中，一個無法確切定義的日常宮廷場景，憑藉純粹的真實感而成為永恆。波特羅在義大利旅行期間參觀了《新婚房》，他那幅於1958年獲獎的作品《夫妻的臥室》，標題即明示其為「向曼帖那致敬」之作。`,
+      source:'第二章，第30–31頁'
+    }
+  },
+  { id:'magritte', group:'influence',
+    label:'雷內·\n馬格利特',
+    title:'雷內·馬格利特 —— 相似性的行為',
+    details:{
+      title:'雷內·馬格利特 —— 相似性的行為',
+      sub:'藝術對話 · 神秘',
+      body:`馬格利特將畫家的任務描述為「相似性的行為」——在世界的影像上，加添那使世界得以成為世界的東西：神秘。帕凱本人著有一部關於馬格利特的專論（《馬格利特，或存在的遮蔽》），他借用這個觀點來說明：波特羅看似將三維世界化約為二維畫面，其實恰恰相反，是征服了「第四維度」——一個將另外三個維度凝聚在一起，而非使之扁平化的維度。`,
+      source:'第一章，第18頁、第22頁註'
+    }
+  },
+  { id:'quattrocento', group:'influence',
+    label:'文藝復興早期\n與義大利大師',
+    title:'文藝復興早期與義大利大師',
+    details:{
+      title:'文藝復興早期與義大利大師',
+      sub:'藝術對話 · 佛羅倫斯、法蘭契斯卡、烏切羅',
+      body:`波特羅的養成歷程貫穿義大利繪畫的巔峰：在佛羅倫斯聖馬可學院研習壁畫技法（喬托、安德烈亞·德爾·卡斯塔尼奧），聆聽羅貝托·隆吉關於文藝復興早期的講座，並為法蘭契斯卡《示巴女王》一作所震動。帕凱認為，正是這場與傳統的對話，使波特羅的現代性得以與文藝復興早期平等對話——如「烏切羅交叉劍鋒」般地交叉樹枝，並使《十二歲的蒙娜麗莎》成為「對達文西真誠而坦率的致敬」——透過差異而非模仿。`,
+      source:'第二章，第22頁；第三章，第66頁；藝術家年表，1953年'
+    }
+  },
+  { id:'precolumbian', group:'influence',
+    label:'前哥倫布藝術\n對抽象表現主義',
+    title:'前哥倫布根源對美國抽象表現主義',
+    details:{
+      title:'前哥倫布根源對美國抽象表現主義',
+      sub:'藝術對話 · 金巴亞陶器、羅斯科、波洛克',
+      body:`身為初抵紐約的年輕哥倫比亞人，波特羅將自己與羅斯科、波洛克的「抽象的尖酸」，以及帕凱所稱「行動繪畫」中的無意義崇拜對立起來——那些「四面亂竄、既無起點亦無中心」的線條。相反地，波特羅將金巴亞前哥倫布陶器中動物形與人形的造型，與義大利文藝復興的偉大傳統融合在一起——這是一種對物件的「敞開」與「對生命的放大」，在帕凱頗具論戰性的看法中，這正是1960年代美國繪畫尚未達到的境界。`,
+      source:'第五章，第102–105頁'
+    }
+  },
+
+  // ---- 重要作品 ----
+  { id:'crying_woman', group:'work',
+    label:'《哭泣的女人》\n（1949）',
+    title:'《哭泣的女人》（1949）—— 水彩，56 × 43公分',
+    details:{
+      title:'《哭泣的女人》（1949）',
+      sub:'重要作品 · 第一章 · 水彩，56 &times; 43公分',
+      body:`帕凱以這幅描繪一位無名哭泣女子的早期水彩畫，開啟全書。波特羅既未畫出眼淚，也未畫出眼睛，但這幅作品卻傳達出「一種渴望超越表現本身的痛苦表現」——「表現的表現」。對帕凱而言，這正是繪畫奠基性姿態的縮影：不是對某個模型的複製，而是揭示出模型本身所未顯現的東西——將痛苦凝固並賦予其形象，而不使其消失。`,
+      source:'第一章，第13–18頁'
+    }
+  },
+  { id:'still_life_mandolin', group:'work',
+    label:'《有曼陀林的\n靜物》（1956）',
+    title:'《有曼陀林的靜物》（1956）',
+    details:{
+      title:'《有曼陀林的靜物》（1956）',
+      sub:'重要作品 · 奠基性的靈光一閃',
+      body:`這幅1956年於墨西哥城繪成的靜物畫，記錄了那個關鍵瞬間——波特羅在素描一把曼陀林時，將音孔畫得比例失當地巨大，並認識到：「我的天，這個物體太雄偉了：它的可塑性多麼驚人。」連同《有樂器的靜物》（1959），這標誌著波特羅從立體主義式的量體研究，轉向他自身定義性風格的決定性轉捩點——帕凱認為，這是此後每件作品都會回歸、以產出同一個奠基性想法「另一個版本」的源點。`,
+      source:'第二章，第18–23頁；藝術家年表，1956年'
+    }
+  },
+  { id:'homage_mantegna', group:'work',
+    label:'《夫妻的臥室\n（向曼帖那致敬）》\n（1958）',
+    title:'《夫妻的臥室（向曼帖那致敬）》，1958年',
+    details:{
+      title:'《夫妻的臥室（向曼帖那致敬）》，1958年',
+      sub:'重要作品 · 波哥大第21屆沙龍首獎',
+      body:`這件作品創作於波特羅首次造訪美國的次年——其標題本身即坦白宣告了其師承（「La Camera degli Sposi / Omaggio a Mantegna」）——於1958年在波哥大第21屆沙龍獲得首獎。它是波特羅參觀曼帖那於曼圖亞貢扎加公爵宮所繪《新婚房》壁畫，與帕凱將波特羅視為曼帖那在追求具象堅實性上之繼承者這一論點之間，最清晰的文獻連結。`,
+      source:'藝術家年表，1958年'
+    }
+  },
+  { id:'mona_lisa', group:'work',
+    label:'《十二歲的\n蒙娜麗莎》（1959）',
+    title:'《十二歲的蒙娜麗莎》（1959）',
+    details:{
+      title:'《十二歲的蒙娜麗莎》（1959）',
+      sub:'重要作品 · 紐約現代藝術博物館',
+      body:`這幅作品繪於1959年，1961年由紐約現代藝術博物館（MoMA）收藏，將繪畫史上最被過度編碼的影像，透過波特羅式量體的「差異」重新呈現。對帕凱而言，這正是波特羅向大師致敬的典範：不是透過模仿，而是——借用黑格爾論述哲學著作彼此「具有親緣關係，但首要的是彼此有所差異」的說法——透過差異本身，這份差異正是獻給達文西「最好的致敬」。`,
+      source:'第三章，第69頁；藝術家年表，1959/1961年'
+    }
+  },
+
+  // ---- 章節 ----
+  { id:'ch1', group:'chapter',
+    label:'第一章\n最初的步伐',
+    title:'第一章：最初的步伐',
+    details:{
+      title:'第一章：最初的步伐',
+      sub:'第一章 · 第9–22頁',
+      body:`本章以對1949年水彩畫《哭泣的女人》的詳細解讀開場，確立全書的基礎詞彙：可見者與感性者、「感識度」，以及繪畫作為通往影像中所欠缺之物的途徑，而非對既有事物的複製。本章以波特羅1956年在墨西哥城面對曼陀林素描的靈光一閃作結——帕凱稱之為「波特羅成為波特羅」的瞬間。`,
+      source:'第9–22頁'
+    }
+  },
+  { id:'ch2', group:'chapter',
+    label:'第二章\n堅實性與可塑性',
+    title:'第二章：堅實性與可塑性',
+    details:{
+      title:'第二章：堅實性與可塑性',
+      sub:'第二章 · 第23–68頁',
+      body:`全書篇幅最長的一章。追溯波特羅透過1956至1959年的靜物畫與立體主義（畢卡索、布拉克）展開的對話，定義「堅實性」與「可塑性」這兩個指引其創作的核心價值，並將曼帖那解讀為波特羅追求具象重量與恆久性的文藝復興先祖——最終導向1958年的《夫妻的臥室：向曼帖那致敬》。`,
+      source:'第23–68頁'
+    }
+  },
+  { id:'ch3', group:'chapter',
+    label:'第三章\n層次的交互作用',
+    title:'第三章：層次的交互作用 —— 內在性與超越性',
+    details:{
+      title:'第三章：層次的交互作用 —— 內在性與超越性',
+      sub:'第三章 · 第69–98頁',
+      body:`發展出「波特羅主義」作為一種根植於技法的觀看方式，檢視畫布作為內在性（顏料、畫筆、藝術家刻意「非有機」的程序）與超越性（作品向自身之外開展之物）相互作用的場域，並以《十二歲的蒙娜麗莎》、《自畫像：初領聖體那天》與《男性習作》等作品，作為比例失衡與具象雄偉性的案例分析。`,
+      source:'第69–98頁'
+    }
+  },
+  { id:'ch4', group:'chapter',
+    label:'第四章\n風格與無須概念\n的溝通',
+    title:'第四章：風格與無須概念的溝通',
+    details:{
+      title:'第四章：風格與無須概念的溝通',
+      sub:'第四章 · 第99–106頁',
+      body:`主張偉大的繪畫傳達出某種無法言喻、逃脫概念與評論的東西——「談論一幅好畫是不可能的」。將波特羅與既有繪畫編碼（文藝復興早期、維拉斯奎茲、安格爾、波納爾）的關係，比擬為莫札特與既有音樂形式的關係，並借用亞里斯多德「曾是其所是」（quiddity，事物之本質）的概念，說明一件單一作品如何成為普遍的。`,
+      source:'第99–106頁'
+    }
+  },
+  { id:'ch5', group:'chapter',
+    label:'第五章\n形式作為感性\n的存在與缺席',
+    title:'第五章：形式作為感性的存在與缺席',
+    details:{
+      title:'第五章：形式作為感性的存在與缺席',
+      sub:'第五章 · 第107–134頁',
+      body:`將波特羅置於羅斯科、波洛克與「行動繪畫」的「抽象的尖酸」之對立面，轉而追溯他在金巴亞前哥倫布陶器與義大利文藝復興融合中的根源。主張繪畫「摧毀本體論上的確定性」，將「臨在」歸還給那些再現性繪畫與純粹抽象同樣使其失去臨在的物件——讓「感識度」重新回到可見之中。`,
+      source:'第107–134頁'
+    }
+  },
+  { id:'ch6', group:'chapter',
+    label:'第六章\n以自己的眼睛\n看見的哥倫比亞',
+    title:'第六章：以自己的眼睛看見的哥倫比亞',
+    details:{
+      title:'第六章：以自己的眼睛看見的哥倫比亞',
+      sub:'第六章 · 第135–138頁',
+      body:`全書的結論。主張波特羅的「合理的比例失衡」與哥倫比亞本身完全契合——這是一個「一切看似都被誇大」的國家，從巨大的蕨類植物到華麗的教堂，無不如此。波特羅給予哥倫比亞「一種每個哥倫比亞人都能認同的視野」，用帕凱的話來說，成為「哥倫比亞文化的奠基者之一」，讓感性在「可見事物的最核心處」閃耀。`,
+      source:'第135–138頁'
+    }
+  },
+
+  // ---- 生平與遺產 ----
+  { id:'formation', group:'life',
+    label:'麥德林與成長歲月\n（1932–1955）',
+    title:'麥德林、波哥大、馬德里、佛羅倫斯（1932–1955）',
+    details:{
+      title:'麥德林、波哥大、馬德里、佛羅倫斯（1932–1955）',
+      sub:'生平與遺產 · 早期成長',
+      body:`波特羅於1932年4月19日生於哥倫比亞麥德林，1948至1952年間在波哥大舉辦首次展覽。憑著獎金與作品銷售所得，他於1952年前往歐洲：在馬德里聖費爾南多學院的一年，於普拉多博物館研習維拉斯奎茲與哥雅（並於此發現法蘭契斯卡）；在巴黎的一個夏天，他更偏愛羅浮宮而非國立現代藝術博物館；自1953年底起，他在佛羅倫斯擁有一間畫室，研習壁畫技法，並聆聽羅貝托·隆吉關於文藝復興早期的講座。`,
+      source:'藝術家年表，1932–1955年'
+    }
+  },
+  { id:'legacy', group:'life',
+    label:'墨西哥、世界\n與哥倫比亞',
+    title:'1956年之後：墨西哥、紐約、巴黎 —— 以及回歸哥倫比亞',
+    details:{
+      title:'1956年之後：墨西哥、紐約、巴黎 —— 以及回歸哥倫比亞',
+      sub:'生平與遺產 · 國際生涯與文化象徵',
+      body:`1956年遷居墨西哥造就了波特羅的定義性風格；隨後展覽接連在華盛頓、紐約（MoMA於1961年收藏《十二歲的蒙娜麗莎》）、聖保羅及歐洲各地舉行，後來更於格林威治村、巴黎與彼得拉桑塔設有畫室。然而帕凱堅持，波特羅最深的快樂仍留在麥德林最貧困的街區——在那裡，人群中有人喊出「費爾南多·波特羅！」，「其價值勝過世上所有的書」。波特羅將畫作與雕塑捐贈給麥德林的安蒂奧基亞博物館（1977年、1984年），在帕凱看來，他成為了現代哥倫比亞文化身份的奠基者之一。`,
+      source:'藝術家年表，1956–1985年；第六章'
+    }
+  },
+];
+
+const edgesRaw = [
+  // 核心 <-> 支柱
+  { from:'dansity', to:'solidity', label:'感性的恆久' },
+  { from:'dansity', to:'plasticity', label:'形即生命之力' },
+  { from:'dansity', to:'immanence_transcendence', label:'感識度浮現之處' },
+  { from:'dansity', to:'disproportion', label:'比例失衡揭示感識度' },
+  { from:'dansity', to:'style_no_concept', label:'不可言說的感識度' },
+
+  // 概念
+  { from:'visible_sentient', to:'dansity', label:'奠基性的二元對立' },
+  { from:'reflective_eye', to:'disproportion', label:'一種觀看方式' },
+  { from:'presentation', to:'immanence_transcendence', label:'非鏡映，非複製' },
+
+  // 藝術對話
+  { from:'cubism', to:'plasticity', label:'研究的出發點' },
+  { from:'cubism', to:'still_life_mandolin', label:'研究脈絡' },
+  { from:'mantegna', to:'solidity', label:'堅實性畫家' },
+  { from:'mantegna', to:'homage_mantegna', label:'直接的致敬' },
+  { from:'magritte', to:'visible_sentient', label:'相似性的行為' },
+  { from:'quattrocento', to:'mona_lisa', label:'與大師的對話' },
+  { from:'quattrocento', to:'formation', label:'1953年，佛羅倫斯' },
+  { from:'precolumbian', to:'ch5', label:'對抽象表現主義的根源' },
+
+  // 作品
+  { from:'crying_woman', to:'ch1', label:'開啟全書' },
+  { from:'crying_woman', to:'dansity', label:'最初的表述' },
+  { from:'still_life_mandolin', to:'ch2', label:'奠基性的靈光一閃' },
+  { from:'still_life_mandolin', to:'plasticity', label:'為可塑性命名' },
+  { from:'homage_mantegna', to:'ch2', label:'獲獎的致敬之作' },
+  { from:'mona_lisa', to:'ch3', label:'比例失衡的實踐' },
+
+  // 章節主線（閱讀順序）
+  { from:'ch1', to:'ch2', spine:true },
+  { from:'ch2', to:'ch3', spine:true },
+  { from:'ch3', to:'ch4', spine:true },
+  { from:'ch4', to:'ch5', spine:true },
+  { from:'ch5', to:'ch6', spine:true },
+
+  // 章節 <-> 內容
+  { from:'ch1', to:'visible_sentient', label:'奠基性詞彙' },
+  { from:'ch2', to:'solidity', label:'定義堅實性' },
+  { from:'ch2', to:'plasticity', label:'定義可塑性' },
+  { from:'ch3', to:'immanence_transcendence', label:'理論核心' },
+  { from:'ch3', to:'disproportion', label:'波特羅主義的實踐' },
+  { from:'ch4', to:'style_no_concept', label:'理論核心' },
+  { from:'ch5', to:'dansity', label:'感識度回歸可見' },
+  { from:'ch6', to:'legacy', label:'哥倫比亞與遺產' },
+
+  // 生平
+  { from:'formation', to:'still_life_mandolin', label:'通向1956年' },
+  { from:'legacy', to:'dansity', label:'感性成為民族的' },
+];
+
+// ---------- build vis datasets ----------
+const visNodes = nodes.map(n=>{
+  const c = GROUPS[n.group].color;
+  return {
+    id:n.id,
+    label:n.label,
+    title:n.title,
+    shape:'box',
+    shapeProperties:{ borderRadius: 8 },
+    margin: n.id==='dansity' ? 14 : 10,
+    widthConstraint: { maximum: n.id==='dansity' ? 230 : 190 },
+    font:{ color:'#13141d', face:'Noto Sans TC', size: n.id==='dansity' ? 16 : 13,
+           bold:n.id==='dansity', multi:true, align:'center' },
+    color:{
+      background:c,
+      border:hexToRgba(c,1),
+      highlight:{ background:c, border:'#ffffff' },
+      hover:{ background:c, border:'#ffffff' }
+    },
+    borderWidth: n.id==='dansity' ? 3 : 1.5,
+    group:n.group
+  };
+});
+
+const visEdges = edgesRaw.map((e,i)=>{
+  if(e.spine){
+    return {
+      id:'e'+i, from:e.from, to:e.to,
+      dashes:true, arrows:{to:{enabled:true, scaleFactor:0.4}},
+      color:{ color:'rgba(108,178,245,0.35)', highlight:'#6cb2f5' },
+      width:1, smooth:{type:'continuous'}
+    };
+  }
+  return {
+    id:'e'+i, from:e.from, to:e.to,
+    label:e.label||'',
+    arrows:{to:{enabled:true, scaleFactor:0.5}},
+    color:{ color:'rgba(180,190,210,0.45)', highlight:'#f0c75e' },
+    font:{ color:'#aab0c4', size:10, strokeWidth:0, align:'top', background:'rgba(11,13,22,0.55)' },
+    width:1.4,
+    smooth:{type:'continuous', roundness:0.25}
+  };
+});
+
+const nodesDS = new vis.DataSet(visNodes);
+const edgesDS = new vis.DataSet(visEdges);
+const detailsMap = {};
+nodes.forEach(n=>detailsMap[n.id]=n.details);
+
+const container = document.getElementById('network');
+const data = { nodes:nodesDS, edges:edgesDS };
+const options = {
+  layout:{ improvedLayout:true },
+  interaction:{ hover:true, tooltipDelay:120, navigationButtons:false, zoomView:true, dragView:true },
+  physics:{
+    barnesHut:{ gravitationalConstant:-9000, centralGravity:0.35, springLength:160, springConstant:0.045, damping:0.5, avoidOverlap:0.4 },
+    stabilization:{ iterations:250 }
+  }
+};
+const network = new vis.Network(container, data, options);
+
+network.once('stabilizationIterationsDone', ()=>{
+  network.setOptions({ physics:false });
+  network.fit({ animation:false });
+});
+
+// ---------- sidebar: default panel ----------
+const infoContent = document.getElementById('info-content');
+const backLink = document.getElementById('back-link');
+
+function renderOverview(){
+  backLink.style.display='none';
+  infoContent.innerHTML = `
+    <h2>費爾南多·波特羅：創作行為的哲學</h2>
+    <div class="formula">感識度 Dansity</div>
+    <p>本圖譜呈現馬塞爾·帕凱（Marcel Paquet）1992年關於費爾南多·波特羅的研究。其核心論點是：波特羅那些雄偉、膨脹的人物形象，並非為誇張而誇張的風格手法，而是一場持續不斷的哲學追尋——追尋帕凱所稱的「感識度」（dansity），那潛藏於、並超越一切可見事物之下的、不可見的感性密度。</p>
+    <p>圖中可探索全書五大理論支柱（堅實性、可塑性、內在性與超越性、比例失衡、無須概念的風格與溝通）、關鍵概念、波特羅所對話的藝術家與傳統（立體主義、曼帖那、馬格利特、文藝復興早期、前哥倫布藝術），以及《哭泣的女人》、《有曼陀林的靜物》等代表作品、全書六個章節，與波特羅的生平及其在哥倫比亞的文化遺產。</p>
+    <div class="source">點擊圖中任一節點，即可查看該概念的詳細說明，以及它在全書中的位置。</div>
+  `;
+}
+renderOverview();
+
+function renderDetail(id){
+  const d = detailsMap[id];
+  if(!d) return;
+  backLink.style.display='block';
+  infoContent.innerHTML = `
+    <span class="tag" style="border-color:${GROUPS[nodes.find(n=>n.id===id).group].color}; color:${GROUPS[nodes.find(n=>n.id===id).group].color}">
+      ${GROUPS[nodes.find(n=>n.id===id).group].label}
+    </span>
+    <h2>${d.title}</h2>
+    <p style="color:var(--text-sub); font-size:.78rem; margin-top:-6px;">${d.sub}</p>
+    <p>${d.body}</p>
+    <div class="source">出處 Source：${d.source}</div>
+  `;
+}
+backLink.addEventListener('click', ()=>{
+  network.unselectAll();
+  clearHighlight();
+  renderOverview();
+});
+
+// ---------- highlight on click ----------
+function clearHighlight(){
+  nodesDS.update(visNodes.map(n=>({ id:n.id, color:n.color, font:n.font, opacity:1 })));
+  edgesDS.update(visEdges.map(e=>({ id:e.id, color:e.color, font:e.font })));
+}
+
+function focusNode(id){
+  const connectedNodes = new Set([id, ...network.getConnectedNodes(id)]);
+  const connectedEdges = new Set(network.getConnectedEdges(id));
+
+  nodesDS.update(visNodes.map(n=>{
+    const dim = !connectedNodes.has(n.id);
+    const c = GROUPS[n.group].color;
+    return {
+      id:n.id,
+      color: dim
+        ? { background:hexToRgba(c,0.10), border:hexToRgba(c,0.18) }
+        : n.color,
+      font: dim
+        ? { color:'rgba(232,233,243,0.18)', face:'Noto Sans TC', size:n.font.size, bold:n.font.bold, multi:true, align:'center' }
+        : n.font
+    };
+  }));
+
+  edgesDS.update(visEdges.map(e=>{
+    const dim = !connectedEdges.has(e.id);
+    return {
+      id:e.id,
+      color: dim
+        ? { color:'rgba(150,150,170,0.04)' }
+        : e.color,
+      font: dim
+        ? { color:'rgba(170,176,196,0)', strokeWidth:0 }
+        : e.font
+    };
+  }));
+}
+
+network.on('click', params=>{
+  if(params.nodes.length>0){
+    const id = params.nodes[0];
+    focusNode(id);
+    renderDetail(id);
+  } else {
+    clearHighlight();
+    renderOverview();
+  }
+});
+
+// ---------- legend ----------
+const legendList = document.getElementById('legend-list');
+const hiddenGroups = new Set();
+
+Object.entries(GROUPS).forEach(([key,info])=>{
+  const item = document.createElement('div');
+  item.className='legend-item';
+  item.innerHTML = `
+    <div class="legend-dot" style="background:${info.color}"></div>
+    <div class="legend-text">${info.label}<small>${info.desc}</small></div>
+  `;
+  item.addEventListener('click', ()=>{
+    if(hiddenGroups.has(key)){ hiddenGroups.delete(key); item.classList.remove('off'); }
+    else { hiddenGroups.add(key); item.classList.add('off'); }
+    nodesDS.update(visNodes.filter(n=>n.group===key).map(n=>({ id:n.id, hidden:hiddenGroups.has(key) })));
+  });
+  legendList.appendChild(item);
+});
+
+// ---------- chapter quick nav ----------
+const chapterNav = document.getElementById('chapter-nav');
+['ch1','ch2','ch3','ch4','ch5','ch6'].forEach((id,i)=>{
+  const btn = document.createElement('button');
+  btn.textContent = `第${['一','二','三','四','五','六'][i]}章`;
+  btn.addEventListener('click', ()=>{
+    network.selectNodes([id]);
+    focusNode(id);
+    renderDetail(id);
+    network.focus(id, { scale:1.0, animation:{duration:400} });
+  });
+  chapterNav.appendChild(btn);
+});
+
+// ---------- reset ----------
+document.getElementById('reset-btn').addEventListener('click', ()=>{
+  network.unselectAll();
+  clearHighlight();
+  renderOverview();
+  Object.keys(GROUPS).forEach(key=>{
+    if(hiddenGroups.has(key)){
+      hiddenGroups.delete(key);
+      nodesDS.update(visNodes.filter(n=>n.group===key).map(n=>({ id:n.id, hidden:false })));
+    }
+  });
+  document.querySelectorAll('.legend-item').forEach(el=>el.classList.remove('off'));
+  network.fit({ animation:{duration:400} });
+});
+
+window.addEventListener('resize', ()=>network.redraw());
+</script>
+</body>
+</html>
