@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en" id="html-root">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Fernando Botero in the Classroom | 費爾南多·波特羅的課堂</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700;900&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-1:#0b0d16;
+    --bg-2:#161a2c;
+    --panel:rgba(255,255,255,0.045);
+    --panel-border:rgba(255,255,255,0.10);
+    --text-main:#e8e9f3;
+    --text-sub:#9aa0b8;
+    --gold:#f0c75e;
+    --green:#5fd38d;
+    --purple:#b48af0;
+    --blue:#6cb2f5;
+    --orange:#f5a25f;
+    --teal:#5fe0d3;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;}
+  body{
+    min-height:100vh;
+    font-family:'Noto Sans TC','Segoe UI','Helvetica Neue',Arial,sans-serif;
+    background:radial-gradient(ellipse at 50% -10%, var(--bg-2) 0%, var(--bg-1) 60%);
+    color:var(--text-main);
+  }
+
+  .lang-switch{
+    position:fixed;
+    top:14px;
+    right:18px;
+    display:flex;
+    gap:8px;
+    z-index:10;
+  }
+  .lang-btn{
+    font-family:inherit;
+    font-size:.78rem;
+    color:var(--text-sub);
+    background:transparent;
+    border:1px solid var(--panel-border);
+    padding:5px 14px;
+    border-radius:999px;
+    cursor:pointer;
+    transition:color .15s, border-color .15s, background .15s;
+  }
+  .lang-btn:hover{color:var(--gold);border-color:var(--gold);}
+  .lang-btn.active{color:var(--bg-1);background:var(--gold);border-color:var(--gold);font-weight:700;}
+
+  .lang-block{display:none;}
+  .lang-block.active{display:block;}
+
+  header{
+    text-align:center;
+    padding:52px 16px 22px;
+    border-bottom:1px solid var(--panel-border);
+    background:linear-gradient(180deg, rgba(240,199,94,0.06), transparent);
+  }
+  header h1{
+    font-family:'Noto Serif TC',serif;
+    font-weight:900;
+    font-size:2rem;
+    margin:0 0 6px;
+    background:linear-gradient(135deg,#f0c75e,#f5a25f 60%,#b48af0);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    letter-spacing:.04em;
+  }
+  header .subtitle{
+    font-family:'Noto Serif TC',serif;
+    font-weight:700;
+    font-size:1.15rem;
+    color:var(--text-main);
+    margin:2px 0;
+  }
+  header .tagline{
+    font-size:.85rem;
+    color:var(--text-sub);
+    margin:8px 0 0;
+    letter-spacing:.02em;
+  }
+
+  main{
+    max-width:760px;
+    margin:0 auto;
+    padding:28px 18px 56px;
+  }
+  .card{
+    background:var(--panel);
+    border:1px solid var(--panel-border);
+    border-radius:14px;
+    padding:22px 26px;
+    margin-bottom:20px;
+    backdrop-filter:blur(6px);
+  }
+  .card h2{
+    font-family:'Noto Serif TC',serif;
+    font-size:1.2rem;
+    margin:0 0 12px;
+    color:var(--gold);
+  }
+  .card p{ line-height:1.85; margin:0 0 12px; font-size:.95rem; }
+  .card ul{ margin:0 0 4px; padding-left:1.3em; line-height:1.9; font-size:.95rem; }
+  .card li{ margin-bottom:8px; }
+  .card code{
+    background:rgba(255,255,255,0.08);
+    border-radius:4px;
+    padding:1px 6px;
+    font-size:.85em;
+  }
+  .formula{
+    font-family:'Noto Serif TC',serif;
+    font-weight:900;
+    font-size:1.6rem;
+    text-align:center;
+    background:linear-gradient(135deg,#f0c75e,#b48af0);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    margin:6px 0 16px;
+  }
+
+  .legend-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+    gap:12px;
+  }
+  .legend-grid .item{
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
+    font-size:.85rem;
+    line-height:1.6;
+  }
+  .legend-dot{
+    width:12px;height:12px;border-radius:50%;
+    flex:0 0 12px;margin-top:4px;
+  }
+
+  .cta-wrap{ text-align:center; margin:30px 0 10px; }
+  .cta-button{
+    display:inline-block;
+    font-family:'Noto Serif TC',serif;
+    font-weight:700;
+    font-size:1.05rem;
+    color:var(--bg-1);
+    background:linear-gradient(135deg,#f0c75e,#f5a25f);
+    padding:14px 36px;
+    border-radius:999px;
+    text-decoration:none;
+    transition:transform .15s, box-shadow .15s;
+    box-shadow:0 4px 18px rgba(240,199,94,0.25);
+  }
+  .cta-button:hover{
+    transform:translateY(-2px);
+    box-shadow:0 6px 22px rgba(240,199,94,0.35);
+  }
+
+  footer{
+    text-align:center;
+    font-size:.78rem;
+    color:var(--text-sub);
+    padding:20px 16px 40px;
+    border-top:1px solid var(--panel-border);
+  }
+  footer .src{
+    display:block;
+    margin:8px auto 0;
+    max-width:760px;
+    line-height:1.7;
+  }
+
+  @media (max-width:600px){
+    header{padding:64px 16px 20px;}
+    header h1{font-size:1.5rem;}
+    .lang-switch{position:fixed; top:10px; right:10px;}
+    .card{padding:18px 18px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="lang-switch">
+  <button class="lang-btn" data-lang="en" type="button">EN English</button>
+  <button class="lang-btn" data-lang="zh" type="button">中文 ZH</button>
+</div>
+
+<!-- ===================== ENGLISH ===================== -->
+<div class="lang-block" data-lang="en" id="block-en">
+
+  <header>
+    <h1>Fernando Botero in the Classroom</h1>
+    <div class="subtitle">An Art-Instinct Knowledge Graph for Educators</div>
+    <div class="tagline">Interactive Knowledge Graph Based on MOLAA's 2023 Educator's Packet &middot; Bilingual Edition</div>
+  </header>
+
+  <main>
+    <section class="card">
+      <h2>About This Page</h2>
+      <p>This page is the bilingual entry point to an interactive <b>knowledge graph</b> built from the Museum of Latin American Art's (MOLAA) 2023 Educator's Packet for the traveling exhibition <i>Fernando Botero: The Master</i> (a Smithsonian Affiliate exhibition).</p>
+      <div class="formula">AI &times; AI</div>
+      <p>The graph is built around a deliberate pun. <b>AI</b> stands for <b>A</b>rtificial <b>I</b>ntelligence &mdash; the technology used to organize this teaching resource &mdash; and also for <b>A</b>rt <b>I</b>nstinct &mdash; the intuitive sense of form, proportion, symbolism and feeling that looking at, talking about, and making art can cultivate in every student.</p>
+      <p>It maps Botero's signature style (<b>Boterismo</b>), the art vocabulary needed to discuss it, Visual Thinking Strategies and gallery games for guided looking, hands-on classroom activities, the featured artworks that anchor each activity, and Botero's 91-year life story &mdash; all woven into a single connected network.</p>
+    </section>
+
+    <section class="card">
+      <h2>What's in the Knowledge Graph</h2>
+      <p>The interactive graph (<code>index_en.html</code>) contains 31 nodes, grouped into six color-coded categories:</p>
+      <div class="legend-grid">
+        <div class="item"><span class="legend-dot" style="background:#f0c75e"></span><span><b>Boterismo &middot; AI &times; AI</b> &mdash; the signature style at the heart of the graph, and the bridge between Artificial Intelligence and Art Instinct</span></div>
+        <div class="item"><span class="legend-dot" style="background:#5fd38d"></span><span><b>Art Vocabulary</b> &mdash; 11 key terms from the packet, from Figurative Art and Symbolism to Bronze Cast Sculpture and Vallenato</span></div>
+        <div class="item"><span class="legend-dot" style="background:#b48af0"></span><span><b>Looking &amp; Teaching Methods</b> &mdash; the three VTS questions, Close Looking, Gallery Games, and the Flash Memory game</span></div>
+        <div class="item"><span class="legend-dot" style="background:#6cb2f5"></span><span><b>Classroom Activities</b> &mdash; the wire &amp; paper-m&acirc;ch&eacute; sculpture lesson, family portraits, and the artist-timeline activity</span></div>
+        <div class="item"><span class="legend-dot" style="background:#f5a25f"></span><span><b>Featured Artworks</b> &mdash; <i>Family in the Plantation</i>, <i>Still Life with Watermelon</i>, <i>Horse / Caballo</i>, <i>La Familia</i>, <i>Reclining Woman</i>, <i>Still Life with Mandolin</i></span></div>
+        <div class="item"><span class="legend-dot" style="background:#5fe0d3"></span><span><b>Life &amp; Legacy</b> &mdash; Botero's biography, from Medell&iacute;n in 1932 to MOLAA's <i>The Master</i> in 2022</span></div>
+      </div>
+      <p style="margin-top:14px;">Clicking any node opens a detailed explanation and page citation in the sidebar.</p>
+    </section>
+
+    <section class="card">
+      <h2>How to Use</h2>
+      <ul>
+        <li>Drag nodes to rearrange the layout; scroll or pinch to zoom in and out.</li>
+        <li>Click any node to read its detailed description in the left panel &mdash; directly connected nodes are highlighted while unrelated ones fade.</li>
+        <li>Click a legend entry to hide or show an entire category of nodes &mdash; focus on one part of the lesson at a time.</li>
+        <li>Use the Teaching Flow buttons (1&ndash;6: Style &middot; Observe &middot; Sculpt &middot; Portrait &middot; Timeline &middot; Legacy) to jump directly to a key lesson node.</li>
+        <li>Click &ldquo;Reset View&rdquo; or empty space to return to the full graph and the overview panel.</li>
+      </ul>
+    </section>
+
+    <div class="cta-wrap">
+      <a class="cta-button" href="index_en.html">Open the Knowledge Graph (English) →</a>
+    </div>
+  </main>
+
+  <footer>
+    Fernando Botero in the Classroom &mdash; An Art-Instinct Knowledge Graph
+    <span class="src">Source: Museum of Latin American Art (MOLAA), <i>Fernando Botero: The Master</i> &mdash; 2023 Educator's Packet (Traveling Exhibition, Smithsonian Affiliate). www.molaa.org</span>
+  </footer>
+
+</div>
+
+<!-- ===================== 中文 ===================== -->
+<div class="lang-block" data-lang="zh" id="block-zh">
+
+  <header>
+    <h1>費爾南多·波特羅的課堂</h1>
+    <div class="subtitle">為教育者打造的藝術直覺知識圖譜</div>
+    <div class="tagline">取材自MOLAA 2023年教育者手冊之互動知識圖譜・雙語版</div>
+  </header>
+
+  <main>
+    <section class="card">
+      <h2>關於本頁</h2>
+      <p>本頁是依據拉丁美洲藝術博物館（Museum of Latin American Art, MOLAA）為巡迴展覽《費爾南多·波特羅：大師》<i>Fernando Botero: The Master</i>（史密森尼附屬機構 Smithsonian Affiliate 展覽）所製作的2023年教育者手冊，建立之互動<b>知識圖譜</b>的雙語入口。</p>
+      <div class="formula">AI &times; AI</div>
+      <p>本圖譜建立於一個刻意設計的雙關語之上：<b>AI</b> 既是 <b>A</b>rtificial <b>I</b>ntelligence（人工智能）——用來組織這份教學資源的技術；也是 <b>A</b>rt <b>I</b>nstinct（藝術直覺）——觀看、討論與創作藝術，能在每一位學生身上培養出的、對形體、比例、象徵與情感的直觀感受。</p>
+      <p>圖譜將波特羅的招牌風格（<b>波特羅主義</b>）、描述它所需的藝術詞彙、用於引導觀看的視覺思考策略與展廳遊戲、動手實作的課堂活動、支撐每項活動的重點作品，以及波特羅91年的人生故事，全部交織成一張相互連結的關係網絡。</p>
+    </section>
+
+    <section class="card">
+      <h2>知識圖譜的內容</h2>
+      <p>互動圖譜（<code>index_ch.html</code>）共31個節點，分為六大色彩分類：</p>
+      <div class="legend-grid">
+        <div class="item"><span class="legend-dot" style="background:#f0c75e"></span><span><b>波特羅主義 · AI &times; AI</b> ——貫穿全圖的核心風格，也是人工智能與藝術直覺之間的橋樑</span></div>
+        <div class="item"><span class="legend-dot" style="background:#5fd38d"></span><span><b>藝術詞彙</b>——手冊中的11個關鍵詞彙，從具象藝術、象徵主義到青銅鑄造雕塑與瓦列納托音樂</span></div>
+        <div class="item"><span class="legend-dot" style="background:#b48af0"></span><span><b>觀看與教學方法</b>——VTS三個核心提問、細緻觀看、展廳遊戲，以及快閃記憶遊戲</span></div>
+        <div class="item"><span class="legend-dot" style="background:#6cb2f5"></span><span><b>課堂活動</b>——鐵絲與紙漿雕塑課程、家族肖像活動，以及藝術家年表活動</span></div>
+        <div class="item"><span class="legend-dot" style="background:#f5a25f"></span><span><b>重點作品</b>——《種植園裡的家族》、《有西瓜的靜物》、《馬／Caballo》、《家族》、《臥女》、《有曼陀林的靜物》</span></div>
+        <div class="item"><span class="legend-dot" style="background:#5fe0d3"></span><span><b>生平與遺產</b>——波特羅的生平，從1932年的麥德林到2022年MOLAA的《大師》展</span></div>
+      </div>
+      <p style="margin-top:14px;">點擊任一節點，側邊欄將顯示該主題的詳細說明與頁碼出處。</p>
+    </section>
+
+    <section class="card">
+      <h2>操作說明</h2>
+      <ul>
+        <li>拖曳節點可重新排列版面；滾輪或手勢可放大、縮小畫面。</li>
+        <li>點擊任一節點，左側面板會顯示該主題的詳細說明，並以高亮顯示其直接關聯的節點，其餘節點則淡化。</li>
+        <li>點擊圖例項目可整類顯示／隱藏節點，協助一次聚焦於課程的某個部分。</li>
+        <li>使用「教學流程」按鈕（1～6：風格・觀察・雕塑・肖像・年表・傳承）可直接跳至對應的關鍵教學節點。</li>
+        <li>點擊「重置視圖」或畫面空白處，可回到完整圖譜與總覽面板。</li>
+      </ul>
+    </section>
+
+    <div class="cta-wrap">
+      <a class="cta-button" href="index_ch.html">開啟知識圖譜（中文版）→</a>
+    </div>
+  </main>
+
+  <footer>
+    費爾南多·波特羅的課堂——藝術直覺知識圖譜
+    <span class="src">來源文件：拉丁美洲藝術博物館（Museum of Latin American Art, MOLAA），《費爾南多·波特羅：大師》<i>Fernando Botero: The Master</i> &mdash; 2023年教育者手冊（巡迴展覽，史密森尼附屬機構）。www.molaa.org</span>
+  </footer>
+
+</div>
+
+<script>
+  function setLang(lang){
+    document.querySelectorAll('.lang-block').forEach(el=>{
+      el.classList.toggle('active', el.dataset.lang === lang);
+    });
+    document.querySelectorAll('.lang-btn').forEach(btn=>{
+      btn.classList.toggle('active', btn.dataset.lang === lang);
+    });
+    document.getElementById('html-root').setAttribute('lang', lang === 'zh' ? 'zh-Hant' : 'en');
+    document.title = lang === 'zh'
+      ? '費爾南多·波特羅的課堂｜藝術直覺知識圖譜'
+      : 'Fernando Botero in the Classroom | An Art-Instinct Knowledge Graph';
+    try { localStorage.setItem('fernando-botero-kg-lang', lang); } catch(e){}
+    if (history.replaceState) history.replaceState(null, '', '#' + lang);
+  }
+
+  document.querySelectorAll('.lang-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=> setLang(btn.dataset.lang));
+  });
+
+  let initial = (location.hash || '').replace('#','');
+  if (initial !== 'en' && initial !== 'zh') {
+    try { initial = localStorage.getItem('fernando-botero-kg-lang'); } catch(e){}
+  }
+  if (initial !== 'en' && initial !== 'zh') {
+    initial = 'en';
+  }
+  setLang(initial);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>費爾南多·波特羅的課堂｜藝術直覺知識圖譜</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700;900&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/vis-network@9.1.9/standalone/umd/vis-network.min.js"></script>
+<style>
+  :root{
+    --bg-1:#0b0d16;
+    --bg-2:#161a2c;
+    --panel:rgba(255,255,255,0.045);
+    --panel-border:rgba(255,255,255,0.10);
+    --text-main:#e8e9f3;
+    --text-sub:#9aa0b8;
+    --gold:#f0c75e;
+    --green:#5fd38d;
+    --purple:#b48af0;
+    --blue:#6cb2f5;
+    --orange:#f5a25f;
+    --teal:#5fe0d3;
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;margin:0;}
+  body{
+    display:flex;flex-direction:column;
+    font-family:'Noto Sans TC','Microsoft JhengHei','PingFang TC',sans-serif;
+    background:radial-gradient(ellipse at 50% -10%, var(--bg-2) 0%, var(--bg-1) 60%);
+    color:var(--text-main);
+  }
+  header{
+    position:relative;
+    flex:0 0 auto;
+    text-align:center;
+    padding:22px 16px 14px;
+    border-bottom:1px solid var(--panel-border);
+    background:linear-gradient(180deg, rgba(240,199,94,0.06), transparent);
+  }
+  header h1{
+    font-family:'Noto Serif TC',serif;
+    font-weight:900;
+    font-size:1.7rem;
+    margin:0 0 4px;
+    background:linear-gradient(135deg,#f0c75e,#f5a25f 60%,#b48af0);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    letter-spacing:.04em;
+  }
+  header .subtitle{
+    font-family:'Noto Serif TC',serif;
+    font-weight:700;
+    font-size:1.05rem;
+    color:var(--text-main);
+    margin:2px 0;
+  }
+  header .en{
+    font-size:.8rem;
+    color:var(--text-sub);
+    margin:4px 0 0;
+    letter-spacing:.02em;
+  }
+  .lang-switch{
+    position:absolute;
+    top:14px;
+    right:18px;
+    font-size:.78rem;
+  }
+  .lang-switch a{
+    color:var(--text-sub);
+    text-decoration:none;
+    border:1px solid var(--panel-border);
+    padding:4px 10px;
+    border-radius:999px;
+    transition:color .15s, border-color .15s;
+  }
+  .lang-switch a:hover{color:var(--gold);border-color:var(--gold);}
+  .layout{
+    flex:1 1 auto;
+    display:flex;
+    min-height:0;
+  }
+  .sidebar{
+    width:380px;
+    flex:0 0 380px;
+    overflow-y:auto;
+    padding:16px;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    border-right:1px solid var(--panel-border);
+  }
+  .panel{
+    background:var(--panel);
+    border:1px solid var(--panel-border);
+    border-radius:12px;
+    padding:14px 16px;
+    backdrop-filter:blur(6px);
+  }
+  .panel h2{
+    font-family:'Noto Serif TC',serif;
+    font-size:1.05rem;
+    margin:0 0 8px;
+    color:var(--gold);
+  }
+  .panel h3{
+    font-size:.8rem;
+    margin:0 0 6px;
+    color:var(--text-sub);
+    font-weight:500;
+    letter-spacing:.05em;
+    text-transform:uppercase;
+  }
+  .panel p{
+    font-size:.86rem;
+    line-height:1.75;
+    margin:0 0 8px;
+    color:var(--text-main);
+  }
+  .panel p:last-child{margin-bottom:0;}
+  .formula{
+    font-family:'Noto Serif TC',serif;
+    font-weight:900;
+    font-size:1.5rem;
+    text-align:center;
+    color:var(--gold);
+    margin:6px 0 10px;
+    letter-spacing:.06em;
+  }
+  .tag{
+    display:inline-block;
+    font-size:.72rem;
+    padding:2px 9px;
+    border-radius:999px;
+    margin:0 6px 8px 0;
+    border:1px solid var(--panel-border);
+    color:var(--text-sub);
+  }
+  .source{
+    font-size:.74rem;
+    color:var(--text-sub);
+    margin-top:8px;
+    padding-top:8px;
+    border-top:1px dashed var(--panel-border);
+  }
+  .back-link{
+    display:none;
+    cursor:pointer;
+    font-size:.78rem;
+    color:var(--blue);
+    margin-bottom:8px;
+    text-decoration:underline;
+  }
+  .legend-list{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+  }
+  .legend-item{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:.82rem;
+    cursor:pointer;
+    padding:5px 8px;
+    border-radius:8px;
+    border:1px solid transparent;
+    transition:background .15s, opacity .15s;
+    user-select:none;
+  }
+  .legend-item:hover{background:rgba(255,255,255,0.05);}
+  .legend-item.off{opacity:.35;}
+  .legend-dot{
+    width:13px;height:13px;border-radius:4px;flex:0 0 13px;
+  }
+  .legend-text small{display:block;color:var(--text-sub);font-size:.7rem;}
+  .chapter-nav{
+    display:flex;flex-wrap:wrap;gap:6px;
+  }
+  .chapter-nav button{
+    font-family:inherit;
+    font-size:.78rem;
+    padding:6px 10px;
+    border-radius:8px;
+    border:1px solid var(--panel-border);
+    background:rgba(108,178,245,0.08);
+    color:var(--text-main);
+    cursor:pointer;
+    transition:background .15s, transform .1s;
+  }
+  .chapter-nav button:hover{background:rgba(108,178,245,0.22);transform:translateY(-1px);}
+  main{
+    flex:1 1 auto;
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    min-width:0;
+  }
+  #network{
+    flex:1 1 auto;
+    min-height:400px;
+  }
+  .controls{
+    flex:0 0 auto;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    padding:8px 14px;
+    border-top:1px solid var(--panel-border);
+    background:rgba(0,0,0,0.18);
+    font-size:.78rem;
+    color:var(--text-sub);
+    flex-wrap:wrap;
+  }
+  .controls button{
+    font-family:inherit;
+    font-size:.78rem;
+    padding:6px 14px;
+    border-radius:8px;
+    border:1px solid var(--panel-border);
+    background:rgba(240,199,94,0.10);
+    color:var(--gold);
+    cursor:pointer;
+  }
+  .controls button:hover{background:rgba(240,199,94,0.22);}
+  footer{
+    flex:0 0 auto;
+    border-top:1px solid var(--panel-border);
+    padding:10px 16px;
+    font-size:.72rem;
+    color:var(--text-sub);
+    line-height:1.8;
+    background:rgba(0,0,0,0.15);
+  }
+  footer b{color:var(--text-main);}
+  @media (max-width:860px){
+    html,body{height:auto;min-height:100%;}
+    body{display:block;}
+    .layout{flex-direction:column;}
+    .sidebar{
+      width:auto;flex:0 0 auto;max-height:42vh;
+      border-right:none;border-bottom:1px solid var(--panel-border);
+    }
+    main{flex:0 0 auto;}
+    #network{height:60vh;min-height:320px;}
+    .controls{flex:0 0 auto;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="lang-switch"><a href="index_en.html">EN English</a> &nbsp;|&nbsp; <a href="index.html">&#8962; 首頁</a></div>
+  <h1>費爾南多·波特羅的課堂</h1>
+  <div class="subtitle">為教育者打造的藝術直覺知識圖譜</div>
+  <div class="en">AI &times; AI —— 以人工智能（Artificial Intelligence）技術，培養藝術直覺（Art Instinct）；取材自拉丁美洲藝術博物館（MOLAA）2023年《費爾南多·波特羅：大師》教育者手冊</div>
+</header>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="panel" id="info-panel">
+      <div class="back-link" id="back-link">&larr; 返回總覽 Back to Overview</div>
+      <div id="info-content"></div>
+    </div>
+
+    <div class="panel">
+      <h3>圖例 Legend ｜ 點擊可顯示／隱藏該類別</h3>
+      <div class="legend-list" id="legend-list"></div>
+    </div>
+
+    <div class="panel">
+      <h3>教學流程 Teaching Flow</h3>
+      <div class="chapter-nav" id="chapter-nav"></div>
+    </div>
+
+    <div class="panel">
+      <h3>操作說明 How to Use</h3>
+      <p>
+        ・拖曳節點可重新排列佈局，滾輪／手勢可縮放畫布。<br>
+        ・點擊任一節點，右側將顯示該主題的詳細說明，並以高亮呈現其關聯節點。<br>
+        ・點擊圖例項目可整類顯示／隱藏節點，幫助聚焦特定主題群組。<br>
+        ・點擊「重置視圖」可恢復完整圖譜。
+      </p>
+    </div>
+  </aside>
+
+  <main>
+    <div id="network"></div>
+    <div class="controls">
+      <span>提示：點擊節點查看詳細說明；點擊空白處或「重置視圖」回到全覽。</span>
+      <button id="reset-btn">重置視圖 Reset View</button>
+    </div>
+  </main>
+</div>
+
+<footer>
+  <b>來源文件 Source Documents：</b>
+  拉丁美洲藝術博物館（Museum of Latin American Art, MOLAA），《費爾南多·波特羅：大師》<i>Fernando Botero: The Master</i> &mdash; 2023年教育者手冊（巡迴展覽，史密森尼附屬機構 Smithsonian Affiliate）。www.molaa.org
+  &nbsp;本知識圖譜為依據該手冊獨立製作之教學資源，旨在透過人工智能（AI）輔助的知識地圖，培養學生的藝術直覺（Art Instinct，AI）。
+</footer>
+
+<script>
+const GROUPS = {
+  core:     { color:'#f0c75e', label:'波特羅主義 · AI × AI',         desc:'貫穿全圖的核心風格——也是人工智能與藝術直覺之間的橋樑' },
+  vocab:    { color:'#5fd38d', label:'藝術詞彙 Art Vocabulary',       desc:'解讀波特羅作品的關鍵詞彙（教育者手冊 p.4）' },
+  method:   { color:'#b48af0', label:'觀看與教學方法',               desc:'引導觀察的VTS提問與展廳遊戲' },
+  activity: { color:'#6cb2f5', label:'課堂活動 Classroom Activities', desc:'取材自展覽的實作課程' },
+  work:     { color:'#f5a25f', label:'重點作品 Featured Artworks',    desc:'手冊中提及的繪畫與雕塑作品' },
+  life:     { color:'#5fe0d3', label:'生平與遺產 Life & Legacy',      desc:'波特羅91年的人生歷程，1932–2023' }
+};
+
+function hexToRgba(hex, a){
+  const r=parseInt(hex.slice(1,3),16), g=parseInt(hex.slice(3,5),16), b=parseInt(hex.slice(5,7),16);
+  return `rgba(${r},${g},${b},${a})`;
+}
+
+const nodes = [
+  // ---- 核心 Core ----
+  { id:'boterismo', group:'core',
+    label:'波特羅主義\n（AI × AI）',
+    title:'波特羅主義 —— 人工智能與藝術直覺的交會（核心節點）',
+    details:{
+      title:'波特羅主義 —— 人工智能與藝術直覺的交會',
+      sub:'核心節點 · 詞彙 #1，p.4',
+      body:`<b>波特羅主義（Boterismo）</b>是費爾南多·波特羅的招牌風格：將人物、動物、水果與物件都畫成誇張飽滿的體積，依作品不同，可帶有政治批判或溫和幽默的意味。本圖譜借用「AI」一詞的雙重意涵——<b>A</b>rtificial <b>I</b>ntelligence（人工智能），即用來繪製這份知識圖譜的技術；以及<b>A</b>rt <b>I</b>nstinct（藝術直覺），即每一項課程設計所要培養的、對形體、比例與情感的直觀感受。本圖譜中的每一條路徑，最終都會回到波特羅主義——一種學生可以辨認、並終將內化為自己的獨特觀看方式。`,
+      source:'詞彙 #1，p.4；年表 1956–1966，p.16'
+    }
+  },
+
+  // ---- 藝術詞彙 Art Vocabulary ----
+  { id:'figurative_art', group:'vocab',
+    label:'具象藝術',
+    title:'具象藝術 —— 描繪真實世界',
+    details:{
+      title:'具象藝術 —— 描繪真實世界',
+      sub:'詞彙 #2，p.4',
+      body:`具象藝術泛指強烈指向真實世界，尤其是人體形象的藝術形式。波特羅徹頭徹尾是位具象畫家：即使形體被誇張到極致，他畫中的對象始終是可辨認的人物、動物、水果或房間——絕非抽象的形狀或純粹為色彩而存在的色彩。對學生而言，這是一個很好的起點：畫出自己所見（或記憶中）的事物，而非憑空捏造。`,
+      source:'詞彙 #2，p.4'
+    }
+  },
+  { id:'mexican_muralism', group:'vocab',
+    label:'墨西哥壁畫運動',
+    title:'墨西哥壁畫運動 —— 「三巨頭」與社會性繪畫',
+    details:{
+      title:'墨西哥壁畫運動 —— 「三巨頭」與社會性繪畫',
+      sub:'詞彙 #3，p.4',
+      body:`墨西哥壁畫運動是1920至1930年代興起的大型公共藝術運動，探討墨西哥的民族認同與社會、政治議題，由「三巨頭」迭戈·里維拉（Diego Rivera）、大衛·阿爾法羅·西凱羅斯（David Alfaro Siqueiros）與何塞·克萊門特·奧羅斯科（Jos&eacute; Clemente Orozco）所領導。其社會主題以及大膽的尺度與透視觀念，在1950年代深深影響了波特羅，並直接催生出其成熟風格的誕生之作：1956年的《有曼陀林的靜物》。`,
+      source:'詞彙 #3，p.4'
+    }
+  },
+  { id:'symbolism', group:'vocab',
+    label:'象徵主義',
+    title:'象徵主義 —— 承載意義的物件',
+    details:{
+      title:'象徵主義 —— 承載意義的物件',
+      sub:'詞彙 #4，p.4',
+      body:`藝術家運用象徵手法，賦予物件超越其字面外觀的意義：水果、花朵、動物、英雄與風景，都可以成為隱喻。一幅堆滿豐盛物件的靜物畫，可能象徵財富；一幅枯萎花朵的畫，則可能象徵時間的流逝。當學生觀看波特羅的靜物畫時，值得提出的問題不只是「這是什麼？」，而是「它可能在象徵什麼？」`,
+      source:'詞彙 #4，p.4'
+    }
+  },
+  { id:'voluminous_form', group:'vocab',
+    label:'體積與形體',
+    title:'體積與形體 —— 波特羅主義的構成基礎',
+    details:{
+      title:'體積與形體 —— 波特羅主義的構成基礎',
+      sub:'詞彙 #5 與 #6，p.4',
+      body:`<b>形體（Form）</b>是藝術的基本元素之一：任何具有長、寬、高三維度的事物皆屬之。<b>飽滿（Voluminous）</b>則用來描述體積或量感特別誇張的形體或物件——這正是描述波特羅圓潤、膨脹的人體、水果與動物最貼切的詞彙。這兩個詞彙，讓學生擁有描述波特羅主義最鮮明特徵的語言，也是通往雕塑課程的橋樑——在那裡，體積將成為學生親手塑造的東西。`,
+      source:'詞彙 #5 與 #6，p.4'
+    }
+  },
+  { id:'still_life_genre', group:'vocab',
+    label:'靜物畫',
+    title:'靜物畫 —— 古老的類型，鮮活的實踐',
+    details:{
+      title:'靜物畫 —— 古老的類型，鮮活的實踐',
+      sub:'詞彙 #7，p.4',
+      body:`靜物畫描繪由藝術家刻意安排的無生命物件——水果、花朵、籃子、碗盤等。這是藝術史上最古老的類型之一，最早可追溯至西元前15世紀的埃及水果畫。波特羅一再回到這個題材：從1956年開啟波特羅主義的《有曼陀林的靜物》，到本手冊「快閃記憶」遊戲所使用的1973年巨幅作品《有西瓜的靜物》。`,
+      source:'詞彙 #7，p.4'
+    }
+  },
+  { id:'bronze_sculpture', group:'vocab',
+    label:'青銅鑄造雕塑',
+    title:'青銅鑄造雕塑 —— 將體積澆鑄成永恆',
+    details:{
+      title:'青銅鑄造雕塑 —— 將體積澆鑄成永恆',
+      sub:'詞彙 #8，p.4',
+      body:`青銅鑄造是將熔化的金屬倒入中空模具，凝固成堅實、永久的雕塑作品的過程。波特羅運用這項工藝，讓他誇張、圓潤的形體——如《臥女》（Reclining Woman）與《馬／Caballo》——獲得繪畫所無法傳達的實體重量與存在感。在課堂上，這是從二維素描通往三維「鐵絲與紙漿」雕塑課的概念橋樑。`,
+      source:'詞彙 #8，p.4'
+    }
+  },
+  { id:'nude_figure', group:'vocab',
+    label:'人體裸像',
+    title:'人體裸像 —— 自信、平衡與形體',
+    details:{
+      title:'人體裸像 —— 自信、平衡與形體',
+      sub:'詞彙 #9，p.4',
+      body:`人體裸像——未著衣的人體——是藝術史上最古老、最普世的題材之一，在最原始的雕塑與繪畫中即已出現，向來被視為自信與平衡的展現。在波特羅的作品中，裸體成為另一個承載「體積」的容器：其圓潤並非誇張變形或諷刺漫畫，而是一種「正當的不成比例」，純粹為形體本身而慶祝。`,
+      source:'詞彙 #9，p.4'
+    }
+  },
+  { id:'renaissance_dialogue', group:'vocab',
+    label:'與文藝復興\n的對話',
+    title:'文藝復興藝術 —— 達文西、烏切洛與波特羅的肖像畫',
+    details:{
+      title:'文藝復興藝術 —— 達文西、烏切洛與波特羅的肖像畫',
+      sub:'詞彙 #10，p.4',
+      body:`文藝復興藝術指14至16世紀歐洲在繪畫、雕塑、建築、音樂與文學上展現對自然、人文主義與社會變遷之關注的創作。達文西（da Vinci）與保羅·烏切洛（Paolo Uccello）等大師，在主題上深深影響了波特羅——他為哥倫比亞知名家族與官員所繪的肖像，便延續了這一傳統；而其1959年作品《十二歲的蒙娜麗莎》，更是與達文西最著名畫作之間一場直接而溫情的對話。`,
+      source:'詞彙 #10，p.4；年表 1956–1966，p.16'
+    }
+  },
+  { id:'vallenato', group:'vocab',
+    label:'瓦列納托音樂',
+    title:'瓦列納托（Vallenato）—— 來自山谷的音樂',
+    details:{
+      title:'瓦列納托（Vallenato）—— 來自山谷的音樂',
+      sub:'詞彙 #11，p.4',
+      body:`瓦列納托（Vallenato，意為「來自山谷」）是哥倫比亞的民謠音樂類型，歌詞傳統上以愛情、謙遜與旅行為主題，歷史上與勞動階層關係密切。如今它在拉丁美洲廣受歡迎，並被列入聯合國教科文組織（UNESCO）「非物質文化遺產」名錄。它提醒我們：波特羅那些誇張而歡快的人物，其實屬於一個更廣闊的哥倫比亞文化——充滿故事、音樂與日常生活的世界——正如《家族》與《種植園裡的家族》所描繪的那樣。`,
+      source:'詞彙 #11，p.4'
+    }
+  },
+
+  // ---- 觀看與教學方法 Looking & Teaching Methods ----
+  { id:'vts_questions', group:'method',
+    label:'VTS：\n三個核心問題',
+    title:'視覺思考策略 —— 開啟任何作品的三個問題',
+    details:{
+      title:'視覺思考策略 —— 開啟任何作品的三個問題',
+      sub:'教學方法 · p.5',
+      body:`視覺思考策略（Visual Thinking Strategies, VTS）是一種以參與者為中心的觀看方式，能培養觀察力、批判性思考，並建立作品與觀者之間的連結。其核心是三個任何老師都能在任何作品前提出的問題：<b>「你認為這幅作品裡正在發生什麼？」</b>、<b>「是什麼細節讓你這樣說？」</b>、<b>「我們還能再發現什麼？」</b>即使是沉默的學生，往往也在心中默默回答——重點在於投入，而非表現。`,
+      source:'視覺思考策略，p.5'
+    }
+  },
+  { id:'close_looking', group:'method',
+    label:'細緻觀看',
+    title:'細緻觀看（Close Looking）—— 慢下來，看見更多',
+    details:{
+      title:'細緻觀看（Close Looking）—— 慢下來，看見更多',
+      sub:'教學方法 · p.5',
+      body:`細緻觀看意味著真正花時間停留在一件作品上——久到讓學生注意到原本會被忽略的細節。先問他們看到了什麼，再耐心等待，接著問還能發現什麼。如果小組需要一些幫助，可以把問題收得更小：與其問「你注意到了什麼？」，不如問「你注意到哪些顏色？」或「你覺得這些人可能是誰？」看得越慢，這段經歷就越令人難忘。`,
+      source:'視覺思考策略，p.5；延伸資源（哈佛大學 Project Zero），p.15'
+    }
+  },
+  { id:'gallery_game_observe', group:'method',
+    label:'展廳遊戲：\n觀察',
+    title:'展廳遊戲 —— 在作品前進行引導式觀察',
+    details:{
+      title:'展廳遊戲 —— 在作品前進行引導式觀察',
+      sub:'教學方法 · 解讀活動 #1，p.6–7',
+      body:`這個展廳遊戲以《種植園裡的家族》（2020）為核心，先讓學生靜靜觀看數秒，再依次提問：你看到哪些顏色？你覺得藝術家為什麼選用這些顏色？這幅畫裡有多少人？有沒有不是人的形象或物件？這些人可能是誰？他們在做什麼？他們為什麼這樣穿著？有人正看著我們嗎？有人望向別處嗎？為什麼？延伸的遊戲還可以邀請學生運用感官（這個場景聞起來、摸起來會是什麼感覺？），或猜測這幅畫呈現的是一段故事的開始、中段，還是結尾。`,
+      source:'解讀活動 #1：展廳遊戲，p.6；展廳遊戲，p.7'
+    }
+  },
+  { id:'flash_memory', group:'method',
+    label:'快閃記憶\n遊戲',
+    title:'快閃記憶 —— 測試我們真正看到了什麼',
+    details:{
+      title:'快閃記憶 —— 測試我們真正看到了什麼',
+      sub:'教學方法 · 解讀活動 #2，p.8',
+      body:`學生先觀看《有西瓜的靜物》（1973）30秒，然後轉身（或閉上眼睛），試著回想：畫中有哪些食物？還有哪些不是食物的東西？畫面裡大概有多少塊水果？背景裡有什麼？轉回身後，全班一起比對記憶與實際畫面——再進一步追問：這些食物擺放多久了？看起來新鮮嗎？那顆橘子是多汁還是乾癟？那塊蛋糕聞起來、嚐起來會是什麼味道？這是一種同時練習觀察細節與象徵意涵的趣味方式。`,
+      source:'解讀活動 #2：快閃記憶，p.8'
+    }
+  },
+
+  // ---- 課堂活動 Classroom Activities ----
+  { id:'lesson_sculpture', group:'activity',
+    label:'雕塑課程：\n鐵絲與紙漿',
+    title:'課程 —— 鐵絲與紙漿雕塑（6至12年級）',
+    details:{
+      title:'課程 —— 鐵絲與紙漿雕塑（6至12年級）',
+      sub:'課堂活動 · 課程，45–60分鐘，p.10–11',
+      body:`以青銅作品《馬／Caballo》（2006）為靈感，學生用鋁線（1–8mm）、紙巾或報紙、膠帶、膠水與廣告顏料，親手製作屬於自己的立體人物、動物或水果造形。步驟包括：先畫出輪廓剪影，再將其拆解為簡單的幾何形狀（「我們的腿和身體像什麼形狀？」），依草圖彎折出約3英尺長的鐵絲骨架，用扭轉的鐵絲與紙張增加體積，固定在紙板底座上，並（4至8年級）以顏料加上個人化細節。最後的討論將「長度與深度如何構成空間感」與波特羅主義誇張的體積感連結起來。`,
+      source:'課程：紙漿鐵絲雕塑，p.10–11'
+    }
+  },
+  { id:'activity_family_portrait', group:'activity',
+    label:'活動：\n家族肖像',
+    title:'在家工作室 —— 自我肖像與家族肖像',
+    details:{
+      title:'在家工作室 —— 自我肖像與家族肖像',
+      sub:'課堂活動 · p.12–13',
+      body:`觀看《家族》（1992）後，學生數一數畫中出現了幾位家庭成員，並討論一幅肖像可以揭露一個人的外貌、個性或日常生活的哪些面向。與同伴一組，每位學生畫一幅自我肖像與一幅家族肖像，選擇能展現自己或家人特質的細節。完成後互相交換作品，討論彼此的觀察——有哪些相似或不同之處？每幅畫又傳達了什麼？p.13提供了兩格自我肖像與兩格家族肖像的範本框格。`,
+      source:'在家工作室——家族肖像，p.12–13'
+    }
+  },
+  { id:'activity_timeline', group:'activity',
+    label:'活動：\n藝術家年表',
+    title:'在家工作室 —— 你的藝術家年表',
+    details:{
+      title:'在家工作室 —— 你的藝術家年表',
+      sub:'課堂活動 · p.14',
+      body:`費爾南多·波特羅在年僅14歲時便展開藝術生涯，並在長達91年的歲月中，將個人經歷、反覆出現的符號與世界大事都融入作品之中。學生可以製作自己的人生年表——生日、開學第一天等重要日期——並為每個事件選擇一個代表性的符號。這項活動將藝術家的人生故事（見p.16的生平年表）與學生自身的人生，直接而個人化地連結起來。`,
+      source:'在家工作室——藝術家年表，p.14'
+    }
+  },
+
+  // ---- 重點作品 Featured Artworks ----
+  { id:'family_plantation', group:'work',
+    label:'《種植園裡的\n家族》（2020）',
+    title:'《種植園裡的家族》，2020',
+    details:{
+      title:'《種植園裡的家族》，2020',
+      sub:'重點作品 · 油彩畫布，70.8 × 63 英吋',
+      body:`油彩畫布，70.8 &times; 63 英吋，波特羅家族私人收藏。畫中一群人物聚集於種植園中，以波特羅一貫的飽滿體積風格呈現。豐富的色彩、眾多人物，以及人物、動物與物件的混合構圖，使其成為手冊主要展廳遊戲的核心作品：學生被要求數一數人物、找出非人的形象、猜測人物關係與場合，並從目光與姿態中尋找線索。`,
+      source:'解讀活動 #1：展廳遊戲，p.6'
+    }
+  },
+  { id:'still_life_watermelon', group:'work',
+    label:'《有西瓜的\n靜物》（1973）',
+    title:'《有西瓜的靜物》，1973',
+    details:{
+      title:'《有西瓜的靜物》，1973',
+      sub:'重點作品 · 油彩畫布，68.6 × 74.6 英吋',
+      body:`油彩畫布，68.6 &times; 74.6 英吋，波特羅家族私人收藏。一張堆滿水果、蛋糕與各式食物的巨幅桌面，以波特羅標誌性的膨脹形體繪成。畫中豐盈的食物，正是「快閃記憶」遊戲的理想題材，也適合用來討論象徵主義——這種豐盛究竟是一種慶祝，還是對過度的隱晦評論？——並與靜物畫及象徵主義的詞彙直接呼應。`,
+      source:'解讀活動 #2：快閃記憶，p.8'
+    }
+  },
+  { id:'horse_caballo', group:'work',
+    label:'《馬／Caballo》\n（2006）',
+    title:'《馬／Caballo》，2006',
+    details:{
+      title:'《馬／Caballo》，2006',
+      sub:'重點作品 · 棕色銹蝕青銅，36¼ × 39¾ × 24⅜ 英吋',
+      body:`棕色銹蝕青銅，36&frac14; &times; 39&frac34; &times; 24&frac38; 英吋，私人收藏。一匹體態渾圓飽滿的青銅馬，是波特羅主義轉化為三維立體的典範。它正是6至12年級雕塑課程的直接範本：學生分析其簡化、膨脹的幾何形體如何營造出紀念碑般的存在感，再在自己的鐵絲紙漿作品中嘗試同樣的歷程。`,
+      source:'課程：紙漿鐵絲雕塑，p.10'
+    }
+  },
+  { id:'la_familia', group:'work',
+    label:'《家族／\nLa Familia》（1992）',
+    title:'《家族／La Familia》，1992',
+    details:{
+      title:'《家族／La Familia》，1992',
+      sub:'重點作品 · 畫布炭筆，52 × 39½ 英吋 —— MOLAA永久館藏',
+      body:`畫布炭筆，52 &times; 39&frac12; 英吋，MOLAA永久館藏，艾斯特爾·索伊徹遺產捐贈（Gift of the Estate of Estelle Soicher）。一幅哥倫比亞家庭的紀念碑式群像，畫中每個人物——無論年齡或角色——都被賦予同樣寬厚的體積。它是「家族肖像」活動的核心作品：學生數一數畫中的家庭成員，再創作自己的自我肖像與家族肖像，與波特羅將「家庭」視為值得被紀念之單位的視角對話。`,
+      source:'在家工作室——家族肖像，p.12'
+    }
+  },
+  { id:'reclining_woman', group:'work',
+    label:'《臥女》\n（2022年展覽）',
+    title:'《臥女》—— 2022年「大師」展核心作品',
+    details:{
+      title:'《臥女》—— 2022年「大師」展核心作品',
+      sub:'重點作品 · 青銅 · MOLAA／鳳凰城沙漠植物園，2022',
+      body:`一件巨型青銅臥女雕塑，是2022年由MOLAA與鳳凰城沙漠植物園（Desert Botanical Garden）共同呈現的《費爾南多·波特羅：大師》展覽核心作品之一——本教育者手冊正是為此展覽而製作。這件作品最完整地展示了「青銅鑄造雕塑」、「飽滿形體」與「人體裸像」三者如何融為一體，並將整本手冊與學生實際可能參觀的展覽連結起來。`,
+      source:'年表 2020–2022，p.16；詞彙 #8，p.4'
+    }
+  },
+  { id:'mandolin_1956', group:'work',
+    label:'《有曼陀林的\n靜物》（1956）',
+    title:'《有曼陀林的靜物》，1956',
+    details:{
+      title:'《有曼陀林的靜物》，1956',
+      sub:'重點作品 · 波特羅主義的誕生之作',
+      body:`1956年於墨西哥城繪製的這幅靜物畫，標誌著波特羅主義的誕生：受墨西哥壁畫運動之宏大尺度與社會視野的影響，波特羅開始將日常物件的體積誇大，直到它們呈現出紀念碑般的存在感。它是整個圖譜的歷史樞紐——詞彙（靜物、象徵主義、體積）、影響（壁畫運動）與生平（墨西哥城時期）都在這幅畫布上相遇。`,
+      source:'詞彙 #3，p.4；年表 1956–1966，p.16'
+    }
+  },
+
+  // ---- 生平與遺產 Life & Legacy ----
+  { id:'birth_medellin', group:'life',
+    label:'生於麥德林\n（1932年）',
+    title:'1932年4月19日 —— 生於哥倫比亞麥德林',
+    details:{
+      title:'1932年4月19日 —— 生於哥倫比亞麥德林',
+      sub:'生平與遺產 · 年表，p.16',
+      body:`費爾南多·波特羅出生於當時還是小鎮的哥倫比亞麥德林（Medell&iacute;n），成長於一個勞動階層家庭——父親是推銷員，母親是裁縫。這段在哥倫比亞外省度過的樸實而緊密的成長經歷，正是他日後創作題材（家庭、廣場、哥倫比亞日常生活）以及他成為哥倫比亞文化象徵這兩者共同的土壤。`,
+      source:'年表，1932年4月19日，p.16'
+    }
+  },
+  { id:'youth_bullfighting', group:'life',
+    label:'少年時期與\n鬥牛學校（1944–48）',
+    title:'1944–48年 —— 失去、鬥牛學校、首次個展',
+    details:{
+      title:'1944–48年 —— 失去、鬥牛學校、首次個展',
+      sub:'生平與遺產 · 年表，p.16',
+      body:`波特羅年少時便失去父親，並被叔叔送去鬥牛學校就讀。年僅16歲，他便成為麥德林最重要報紙之一《哥倫比亞人報》（El Colombiano）的插畫家，三年後在波哥大舉辦了人生第一次個展。一個早已交織著失落與奇觀、傳統與野心的童年，為他日後作品的情感幅度打下了基礎。`,
+      source:'年表 1944–1948，p.16'
+    }
+  },
+  { id:'bogota_violencia', group:'life',
+    label:'波哥大與\n「暴力時期」（1952）',
+    title:'1952年 —— 波哥大、馬德里與「暴力時期」',
+    details:{
+      title:'1952年 —— 波哥大、馬德里與「暴力時期」',
+      sub:'生平與遺產 · 年表，p.16',
+      body:`20歲時，在馬德里求學一年之後，波特羅移居波哥大，並在萊奧·馬蒂斯畫廊（Leo Matiz Gallery）舉辦了首次個展。受墨西哥壁畫運動主題的影響，他的畫作開始直面《暴力時期》（La Violencia）——哥倫比亞自由黨與保守黨之間長達十年的內戰現實。這證明：即使是他最早期的成熟作品，也從未只是純粹的裝飾。`,
+      source:'年表 1952年，p.16'
+    }
+  },
+  { id:'europe_formation', group:'life',
+    label:'巴黎與佛羅倫斯\n（1953–1956）',
+    title:'1953–1956年 —— 巴黎、佛羅倫斯與艱難的歸來',
+    details:{
+      title:'1953–1956年 —— 巴黎、佛羅倫斯與艱難的歸來',
+      sub:'生平與遺產 · 年表，p.16',
+      body:`波特羅移居巴黎，靠在羅浮宮外賣畫維生，之後又前往佛羅倫斯，鑽研喬托（Giotto）與米開朗基羅（Michelangelo）的技法，並在文藝復興傳統中創作。他帶著二十幅在義大利完成的作品回到波哥大，卻遭到嚴厲的負評，只能重新回去從事插畫工作——這提醒我們：波特羅主義並非一蹴而就，而是經歷挫敗之後才逐漸成形。`,
+      source:'年表 1953–1956，p.16'
+    }
+  },
+  { id:'mexico_decade', group:'life',
+    label:'墨西哥城：\n波特羅主義誕生（1956–66）',
+    title:'1956–1966年 —— 墨西哥城：波特羅主義的誕生',
+    details:{
+      title:'1956–1966年 —— 墨西哥城：波特羅主義的誕生',
+      sub:'生平與遺產 · 年表，p.16',
+      body:`接下來的十年，評價開始轉為正面。波特羅往來於歐洲、拉丁美洲與美國之間，並在墨西哥城發展出後來被稱為「波特羅主義」的誇張體積風格，創作了《有曼陀林的靜物》。他向達文西致敬之作《十二歲的蒙娜麗莎》，在他定居紐約期間為現代藝術博物館（MoMA）收藏並展出；他也被任命為波哥大國立大學繪畫教授——確認了他已是哥倫比亞最重要的畫家之一。`,
+      source:'年表 1956–1966，p.16'
+    }
+  },
+  { id:'accident_sculpture', group:'life',
+    label:'失去與\n首批雕塑（1973–79）',
+    title:'1973–1979年 —— 悲劇，與第一批雕塑作品',
+    details:{
+      title:'1973–1979年 —— 悲劇，與第一批雕塑作品',
+      sub:'生平與遺產 · 年表，p.16',
+      body:`在國際聲望日益高漲之際，波特羅與家人遭遇一場悲劇性的車禍，他四歲的兒子佩德羅（Pedro）在事故中喪生。在處理傷痛與哀悼的過程中，波特羅開始創作他的第一批雕塑作品，並獲得委內瑞拉與哥倫比亞政府的表揚。日後如《臥女》與《馬／Caballo》等雕塑作品的轉向，其根源便在於這段失落的歲月。`,
+      source:'年表 1973–1979，p.16'
+    }
+  },
+  { id:'global_recognition', group:'life',
+    label:'邁向全球\n（1980–1996）',
+    title:'1980–1996年 —— 大都會博物館、《家族》與全球巡展',
+    details:{
+      title:'1980–1996年 —— 大都會博物館、《家族》與全球巡展',
+      sub:'生平與遺產 · 年表，p.16',
+      body:`紐約大都會藝術博物館（The Met）收藏了他的作品《在哥倫比亞跳舞》（Dancing in Colombia）；《鬥牛場》（La Corrida）系列插畫在墨西哥塔馬約博物館與洛杉磯藝術展展出。波特羅的繪畫與雕塑——包括這段時期完成的《家族》（1992）——陸續在丹麥、義大利、土耳其、俄羅斯、日本與波多黎各展出。在麥德林，一座由他捐贈的青銅鴿子公共雕塑遭恐怖襲擊炸毀；出於對和平的信念，波特羅捐贈了一件一模一樣的複製品。`,
+      source:'年表 1980–1996，p.16'
+    }
+  },
+  { id:'global_legacy', group:'life',
+    label:'世界巡迴與\nMOLAA「大師」展（2012–22）',
+    title:'2012–2022年 —— 世界巡迴、北京與香港，以及MOLAA「大師」展',
+    details:{
+      title:'2012–2022年 —— 世界巡迴、北京與香港，以及MOLAA「大師」展',
+      sub:'生平與遺產 · 年表，p.16',
+      body:`為慶祝波特羅80歲生日（2012年），全球各地的博物館與畫廊舉辦回顧展；波特羅主義也走向東方——九件巨型雕塑、一系列受巴洛克風格啟發的畫作，以及描繪哥倫比亞社會、鬥牛士與靜物的插畫，在北京中國國家博物館與香港中環海濱展出。如今波特羅往來於巴黎、蒙地卡羅、皮耶特拉桑塔（Pietrasanta）與紐約之間，並與MOLAA及鳳凰城沙漠植物園合作，共同推出《費爾南多·波特羅：大師》（2022）——正是本手冊所支援的這場展覽——並在MOLAA年度晚宴上獲頒「LEGADO：藝術傳承」榮譽，以表彰其90歲生日及畢生貢獻。從麥德林出發的90年後，波特羅主義已成為一種全球共享的「體積」語言。`,
+      source:'年表 2012–2017 與 2020–2022，p.16'
+    }
+  },
+];
+
+const edgesRaw = [
+  // 核心 -> 風格與詞彙
+  { from:'boterismo', to:'voluminous_form', label:'定義誇張的體積' },
+  { from:'boterismo', to:'figurative_art', label:'根植於具象' },
+  { from:'boterismo', to:'mexican_muralism', label:'誕生於社會性的尺度' },
+  { from:'boterismo', to:'mandolin_1956', label:'誕生之作' },
+  { from:'boterismo', to:'reclining_woman', label:'以青銅實現' },
+  { from:'boterismo', to:'mexico_decade', label:'在墨西哥城命名' },
+
+  // 詞彙之間的連結
+  { from:'figurative_art', to:'nude_figure', label:'人體形象' },
+  { from:'figurative_art', to:'la_familia', label:'描繪真實的人' },
+  { from:'mexican_muralism', to:'mandolin_1956', label:'尺度與社會視野' },
+  { from:'mexican_muralism', to:'bogota_violencia', label:'塑造早期主題' },
+  { from:'symbolism', to:'still_life_watermelon', label:'豐盛作為隱喻' },
+  { from:'symbolism', to:'still_life_genre', label:'物件之外的意義' },
+  { from:'voluminous_form', to:'horse_caballo', label:'青銅中的體積' },
+  { from:'voluminous_form', to:'reclining_woman', label:'青銅中的體積' },
+  { from:'still_life_genre', to:'still_life_watermelon', label:'鮮活的類型' },
+  { from:'still_life_genre', to:'mandolin_1956', label:'波特羅主義的起點' },
+  { from:'bronze_sculpture', to:'horse_caballo', label:'青銅鑄造' },
+  { from:'bronze_sculpture', to:'reclining_woman', label:'青銅鑄造' },
+  { from:'nude_figure', to:'reclining_woman', label:'形體的慶祝' },
+  { from:'renaissance_dialogue', to:'mexico_decade', label:'十二歲的蒙娜麗莎' },
+  { from:'renaissance_dialogue', to:'europe_formation', label:'鑽研大師之作' },
+  { from:'vallenato', to:'birth_medellin', label:'哥倫比亞的根源' },
+  { from:'vallenato', to:'la_familia', label:'哥倫比亞日常生活' },
+
+  // 觀看與教學方法
+  { from:'vts_questions', to:'close_looking', label:'更慢的觀看方式' },
+  { from:'vts_questions', to:'gallery_game_observe', label:'提問的實踐' },
+  { from:'vts_questions', to:'flash_memory', label:'提問的實踐' },
+  { from:'close_looking', to:'gallery_game_observe', label:'先觀看，再遊戲' },
+  { from:'gallery_game_observe', to:'family_plantation', label:'核心作品' },
+  { from:'flash_memory', to:'still_life_watermelon', label:'核心作品' },
+
+  // 課堂活動
+  { from:'lesson_sculpture', to:'horse_caballo', label:'雕塑範本' },
+  { from:'lesson_sculpture', to:'voluminous_form', label:'構築體積' },
+  { from:'lesson_sculpture', to:'boterismo', label:'風格化為立體' },
+  { from:'activity_family_portrait', to:'la_familia', label:'核心作品' },
+  { from:'activity_family_portrait', to:'figurative_art', label:'描繪真實的人' },
+  { from:'activity_timeline', to:'birth_medellin', label:'人生中的年表' },
+  { from:'activity_timeline', to:'global_legacy', label:'91年的創作生涯' },
+
+  // 生平脈絡（時間順序）
+  { from:'birth_medellin', to:'youth_bullfighting', spine:true },
+  { from:'youth_bullfighting', to:'bogota_violencia', spine:true },
+  { from:'bogota_violencia', to:'europe_formation', spine:true },
+  { from:'europe_formation', to:'mexico_decade', spine:true },
+  { from:'mexico_decade', to:'accident_sculpture', spine:true },
+  { from:'accident_sculpture', to:'global_recognition', spine:true },
+  { from:'global_recognition', to:'global_legacy', spine:true },
+
+  // 生平與內容之間的連結
+  { from:'mexico_decade', to:'mandolin_1956', label:'1956年：波特羅主義開始' },
+  { from:'accident_sculpture', to:'reclining_woman', label:'雕塑生涯的起點' },
+  { from:'global_recognition', to:'la_familia', label:'1992年完成' },
+  { from:'global_legacy', to:'reclining_woman', label:'2022年：大師展' },
+];
+
+// ---------- build vis datasets ----------
+const visNodes = nodes.map(n=>{
+  const c = GROUPS[n.group].color;
+  return {
+    id:n.id,
+    label:n.label,
+    title:n.title,
+    shape:'box',
+    shapeProperties:{ borderRadius: 8 },
+    margin: n.id==='boterismo' ? 14 : 10,
+    widthConstraint: { maximum: n.id==='boterismo' ? 230 : 190 },
+    font:{ color:'#13141d', face:'Noto Sans TC', size: n.id==='boterismo' ? 16 : 13,
+           bold:n.id==='boterismo', multi:true, align:'center' },
+    color:{
+      background:c,
+      border:hexToRgba(c,1),
+      highlight:{ background:c, border:'#ffffff' },
+      hover:{ background:c, border:'#ffffff' }
+    },
+    borderWidth: n.id==='boterismo' ? 3 : 1.5,
+    group:n.group
+  };
+});
+
+const visEdges = edgesRaw.map((e,i)=>{
+  if(e.spine){
+    return {
+      id:'e'+i, from:e.from, to:e.to,
+      dashes:true, arrows:{to:{enabled:true, scaleFactor:0.4}},
+      color:{ color:'rgba(108,178,245,0.35)', highlight:'#6cb2f5' },
+      width:1, smooth:{type:'continuous'}
+    };
+  }
+  return {
+    id:'e'+i, from:e.from, to:e.to,
+    label:e.label||'',
+    arrows:{to:{enabled:true, scaleFactor:0.5}},
+    color:{ color:'rgba(180,190,210,0.45)', highlight:'#f0c75e' },
+    font:{ color:'#aab0c4', size:10, strokeWidth:0, align:'top', background:'rgba(11,13,22,0.55)' },
+    width:1.4,
+    smooth:{type:'continuous', roundness:0.25}
+  };
+});
+
+const nodesDS = new vis.DataSet(visNodes);
+const edgesDS = new vis.DataSet(visEdges);
+const detailsMap = {};
+nodes.forEach(n=>detailsMap[n.id]=n.details);
+
+const container = document.getElementById('network');
+const data = { nodes:nodesDS, edges:edgesDS };
+const options = {
+  layout:{ improvedLayout:true },
+  interaction:{ hover:true, tooltipDelay:120, navigationButtons:false, zoomView:true, dragView:true },
+  physics:{
+    barnesHut:{ gravitationalConstant:-9000, centralGravity:0.35, springLength:160, springConstant:0.045, damping:0.5, avoidOverlap:0.4 },
+    stabilization:{ iterations:250 }
+  }
+};
+const network = new vis.Network(container, data, options);
+
+network.once('stabilizationIterationsDone', ()=>{
+  network.setOptions({ physics:false });
+  network.fit({ animation:false });
+});
+
+// ---------- sidebar: default panel ----------
+const infoContent = document.getElementById('info-content');
+const backLink = document.getElementById('back-link');
+
+function renderOverview(){
+  backLink.style.display='none';
+  infoContent.innerHTML = `
+    <h2>費爾南多·波特羅的課堂</h2>
+    <div class="formula">AI &times; AI</div>
+    <p>本圖譜將拉丁美洲藝術博物館（MOLAA）2023年為《費爾南多·波特羅：大師》展覽製作的教育者手冊，轉化為一份互動式的教學地圖。其核心構想是一個刻意設計的雙關語：<b>AI</b> 既是 Artificial Intelligence（人工智能）——用來組織這份知識的技術；也是 Art Instinct（藝術直覺）——觀看與創作藝術所能培養出的、對形體、比例、象徵與情感的直觀感受，而這正是每一位學生都能逐步建立的能力。</p>
+    <p>探索波特羅的招牌風格<b>波特羅主義</b>；描述它所需的藝術詞彙；用於引導觀看的視覺思考策略（VTS）與展廳遊戲；雕塑、肖像、年表等動手實作的課堂活動；支撐每項活動的重點作品；以及貫穿一切的91年人生故事。</p>
+    <div class="source">點擊圖中任一節點，即可查看該主題的詳細說明，以及它在課程中的位置。</div>
+  `;
+}
+renderOverview();
+
+function renderDetail(id){
+  const d = detailsMap[id];
+  if(!d) return;
+  backLink.style.display='block';
+  infoContent.innerHTML = `
+    <span class="tag" style="border-color:${GROUPS[nodes.find(n=>n.id===id).group].color}; color:${GROUPS[nodes.find(n=>n.id===id).group].color}">
+      ${GROUPS[nodes.find(n=>n.id===id).group].label}
+    </span>
+    <h2>${d.title}</h2>
+    <p style="color:var(--text-sub); font-size:.78rem; margin-top:-6px;">${d.sub}</p>
+    <p>${d.body}</p>
+    <div class="source">出處 Source：${d.source}</div>
+  `;
+}
+backLink.addEventListener('click', ()=>{
+  network.unselectAll();
+  clearHighlight();
+  renderOverview();
+});
+
+// ---------- highlight on click ----------
+function clearHighlight(){
+  nodesDS.update(visNodes.map(n=>({ id:n.id, color:n.color, font:n.font, opacity:1 })));
+  edgesDS.update(visEdges.map(e=>({ id:e.id, color:e.color, font:e.font })));
+}
+
+function focusNode(id){
+  const connectedNodes = new Set([id, ...network.getConnectedNodes(id)]);
+  const connectedEdges = new Set(network.getConnectedEdges(id));
+
+  nodesDS.update(visNodes.map(n=>{
+    const dim = !connectedNodes.has(n.id);
+    const c = GROUPS[n.group].color;
+    return {
+      id:n.id,
+      color: dim
+        ? { background:hexToRgba(c,0.10), border:hexToRgba(c,0.18) }
+        : n.color,
+      font: dim
+        ? { color:'rgba(232,233,243,0.18)', face:'Noto Sans TC', size:n.font.size, bold:n.font.bold, multi:true, align:'center' }
+        : n.font
+    };
+  }));
+
+  edgesDS.update(visEdges.map(e=>{
+    const dim = !connectedEdges.has(e.id);
+    return {
+      id:e.id,
+      color: dim
+        ? { color:'rgba(150,150,170,0.04)' }
+        : e.color,
+      font: dim
+        ? { color:'rgba(170,176,196,0)', strokeWidth:0 }
+        : e.font
+    };
+  }));
+}
+
+network.on('click', params=>{
+  if(params.nodes.length>0){
+    const id = params.nodes[0];
+    focusNode(id);
+    renderDetail(id);
+  } else {
+    clearHighlight();
+    renderOverview();
+  }
+});
+
+// ---------- legend ----------
+const legendList = document.getElementById('legend-list');
+const hiddenGroups = new Set();
+
+Object.entries(GROUPS).forEach(([key,info])=>{
+  const item = document.createElement('div');
+  item.className='legend-item';
+  item.innerHTML = `
+    <div class="legend-dot" style="background:${info.color}"></div>
+    <div class="legend-text">${info.label}<small>${info.desc}</small></div>
+  `;
+  item.addEventListener('click', ()=>{
+    if(hiddenGroups.has(key)){ hiddenGroups.delete(key); item.classList.remove('off'); }
+    else { hiddenGroups.add(key); item.classList.add('off'); }
+    nodesDS.update(visNodes.filter(n=>n.group===key).map(n=>({ id:n.id, hidden:hiddenGroups.has(key) })));
+  });
+  legendList.appendChild(item);
+});
+
+// ---------- 教學流程 quick nav ----------
+const chapterNav = document.getElementById('chapter-nav');
+const teachingFlow = [
+  { id:'boterismo',               label:'1. 風格' },
+  { id:'vts_questions',           label:'2. 觀察' },
+  { id:'lesson_sculpture',        label:'3. 雕塑' },
+  { id:'activity_family_portrait',label:'4. 肖像' },
+  { id:'activity_timeline',       label:'5. 年表' },
+  { id:'global_legacy',           label:'6. 傳承' },
+];
+teachingFlow.forEach(({id,label})=>{
+  const btn = document.createElement('button');
+  btn.textContent = label;
+  btn.addEventListener('click', ()=>{
+    network.selectNodes([id]);
+    focusNode(id);
+    renderDetail(id);
+    network.focus(id, { scale:1.0, animation:{duration:400} });
+  });
+  chapterNav.appendChild(btn);
+});
+
+// ---------- reset ----------
+document.getElementById('reset-btn').addEventListener('click', ()=>{
+  network.unselectAll();
+  clearHighlight();
+  renderOverview();
+  Object.keys(GROUPS).forEach(key=>{
+    if(hiddenGroups.has(key)){
+      hiddenGroups.delete(key);
+      nodesDS.update(visNodes.filter(n=>n.group===key).map(n=>({ id:n.id, hidden:false })));
+    }
+  });
+  document.querySelectorAll('.legend-item').forEach(el=>el.classList.remove('off'));
+  network.fit({ animation:{duration:400} });
+});
+
+window.addEventListener('resize', ()=>network.redraw());
+</script>
+</body>
+</html>
